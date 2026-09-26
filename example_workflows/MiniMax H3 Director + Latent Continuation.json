@@ -2,7 +2,7 @@
   "id": "73b512fe-b33d-4b32-b610-4cdbe4730879",
   "revision": 0,
   "last_node_id": 1407,
-  "last_link_id": 1868,
+  "last_link_id": 1869,
   "nodes": [
     {
       "id": 250,
@@ -787,6 +787,11 @@
           "name": "seed_video",
           "type": "VIDEO",
           "link": 652
+        },
+        {
+          "name": "scene",
+          "type": "MINIMAX_H3_DIRECTOR_SCENE",
+          "link": 1869
         }
       ],
       "outputs": [
@@ -1480,6 +1485,14 @@
           "name": "retake_info",
           "type": "STRING",
           "links": null
+        },
+        {
+          "localized_name": "scene",
+          "name": "scene",
+          "type": "MINIMAX_H3_DIRECTOR_SCENE",
+          "links": [
+            1869
+          ]
         }
       ],
       "properties": {
@@ -2453,6 +2466,14 @@
       343,
       1,
       "MODEL"
+    ],
+    [
+      1869,
+      1005,
+      10,
+      328,
+      9,
+      "MINIMAX_H3_DIRECTOR_SCENE"
     ]
   ],
   "groups": [],
