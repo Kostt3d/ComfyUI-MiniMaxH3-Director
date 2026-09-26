@@ -4,11 +4,37 @@ This node deliberately delegates context planning to the installed SatoDive
 extension. It does not decode and re-encode the previous clip.
 """
 
+import re
+
 from comfy_api.latest import io
 
 
 H3Bundle = io.Custom("MINIMAX_H3_BUNDLE")
 H3Context = io.Custom("MINIMAX_H3_CONTEXT")
+
+
+# Director compiles timeline shots as markers such as [0s-1.5s].  Keep the
+# expression deliberately tolerant of whitespace and markers without an `s`, so
+# older saved workflows and hand-edited prompts keep working.
+_SHOT_RANGE_RE = re.compile(
+    r"\[\s*\d+(?:\.\d+)?\s*s?\s*-\s*(\d+(?:\.\d+)?)\s*s?\s*\]",
+    re.IGNORECASE,
+)
+
+
+def _director_scene_seconds(director_prompt):
+    """Return the end time of the last timed shot in a compiled Director prompt."""
+    ends = [float(value) for value in _SHOT_RANGE_RE.findall(str(director_prompt))]
+    if not ends:
+        raise ValueError(
+            "Continuation seconds is 0 (Director duration mode), but the Director prompt "
+            "contains no timed [start-end] shot markers. Set seconds manually, or connect "
+            "the compiled prompt output from MiniMax H3 Director."
+        )
+    seconds = max(ends)
+    if seconds <= 0:
+        raise ValueError("Director scene duration must be greater than zero.")
+    return seconds
 
 
 def _context_node():
@@ -36,8 +62,10 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
             category="MiniMax H3 Director",
             description=(
                 "Connect Director.prompt and the prior SatoDive AV latent. "
-                "Connect the outputs to SatoDive Segment Sample and Decode. "
-                "Timeline media references must also be supplied to SatoDive."
+                "With seconds=0, the continuation duration is read automatically from "
+                "the Director storyboard timeline. Set seconds above 0 only to override it. "
+                "Connect the outputs to SatoDive Segment Sample and Decode. Timeline media "
+                "references must also be supplied to SatoDive."
             ),
             inputs=[
                 H3Bundle.Input("h3_bundle"),
@@ -45,10 +73,18 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
                 io.Latent.Input("seed_latent"),
                 io.Int.Input("width", force_input=True, min=32, max=8192),
                 io.Int.Input("height", force_input=True, min=32, max=8192),
-                io.Float.Input("seconds", default=8.0, min=1.0, max=120.0),
+                io.Float.Input(
+                    "seconds", default=0.0, min=0.0, max=120.0,
+                    tooltip=(
+                        "0 = automatically use this Director scene's timeline duration. "
+                        "Set a value above 0 to override the Director duration."
+                    ),
+                ),
                 io.Float.Input("fps", default=24.0, min=1.0, max=120.0),
                 io.Int.Input("context_length", default=22, min=1, max=128),
                 io.Video.Input("seed_video", optional=True),
+                io.Custom("MINIMAX_H3_DIRECTOR_SCENE").Input("scene", optional=True,
+                    tooltip="Connect Director.scene to inherit its exact prompt, duration, canvas, FPS and references."),
             ],
             outputs=[
                 io.Model.Output(display_name="model"),
@@ -59,12 +95,33 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
     @classmethod
     def execute(
         cls, h3_bundle, director_prompt, seed_latent, width, height,
-        seconds=8.0, fps=24.0, context_length=22, seed_video=None,
+        seconds=0.0, fps=24.0, context_length=22, seed_video=None, scene=None,
     ):
+        media_inputs = {}
+        if scene is not None:
+            if not isinstance(scene, dict):
+                raise ValueError("Director scene payload is invalid; reconnect Director.scene.")
+            director_prompt = scene['prompt']
+            width, height = scene['width'], scene['height']
+            fps = scene['fps']
+            seconds = scene['seconds']
+            for index, (kind, value) in enumerate(scene.get('media', ()), 1):
+                media_inputs[f'media_{index}'] = value
+                media_inputs[f'media_type_{index}'] = kind
+            if not scene['media']:
+                media_inputs['first_frame'] = scene.get('first_frame')
+                media_inputs['last_frame'] = scene.get('last_frame')
         if not str(director_prompt).strip():
             raise ValueError("Director prompt is empty; add a shot to the timeline.")
         if int(width) < 32 or int(height) < 32:
             raise ValueError("Connect Director width and height outputs.")
+
+        # A zero value means Director owns the scene length.  The compiled prompt is the
+        # most reliable source here: it already reflects the Director render window and
+        # the exact scene timing, while keeping this bridge independent of Director's UI.
+        resolved_seconds = float(seconds)
+        if resolved_seconds <= 0:
+            resolved_seconds = _director_scene_seconds(director_prompt)
 
         context_class = _context_node()
         required = context_class.INPUT_TYPES()["required"]
@@ -84,7 +141,7 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
             custom_ratio=f"{int(width)}:{int(height)}",
             width=int(width),
             height=int(height),
-            seconds=float(seconds),
+            seconds=resolved_seconds,
             segment_seconds="",
             context_length=int(context_length),
             continuity_mode="Native Guide",
@@ -99,6 +156,7 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
             seed_latent=seed_latent,
             seed_video=seed_video,
         )
+        defaults.update(media_inputs)
         model, context = context_class.generate(**defaults)
         return io.NodeOutput(model, context)
 
