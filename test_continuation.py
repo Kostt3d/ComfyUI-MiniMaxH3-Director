@@ -49,9 +49,8 @@ class ContinuationTest(unittest.TestCase):
             cls.module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(cls.module)
 
-    def test_passes_director_prompt_and_native_latent_to_sato(self):
-        received = {}
-
+    @staticmethod
+    def _context(received):
         class Context:
             @staticmethod
             def INPUT_TYPES():
@@ -61,27 +60,59 @@ class ContinuationTest(unittest.TestCase):
             def generate(**kwargs):
                 received.update(kwargs)
                 return "model", "context"
+        return Context
 
+    def test_passes_director_prompt_and_native_latent_to_sato(self):
+        received = {}
         nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
-            "MiniMaxH3EasyContextSegments_SatoDive": Context,
+            "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
         })
         with patch.dict(sys.modules, {"nodes": nodes}):
             result = self.module.MiniMaxH3DirectorContinuation.execute(
-                "bundle", "He picks up the necklace", "AV latent", 864, 480,
+                "bundle", "[0s-8s] He picks up the necklace", "AV latent", 864, 480,
                 seconds=8, fps=24,
             )
         self.assertEqual(result, ("model", "context"))
-        self.assertEqual(received["prompt"], "He picks up the necklace")
+        self.assertEqual(received["prompt"], "[0s-8s] He picks up the necklace")
         self.assertEqual(received["seed_latent"], "AV latent")
         self.assertEqual((received["width"], received["height"]), (864, 480))
         self.assertEqual(received["resolution"], "custom")
         self.assertEqual(received["continuity_mode"], "Native Guide")
+        self.assertEqual(received["seconds"], 8)
+
+    def test_zero_seconds_inherits_director_scene_duration(self):
+        received = {}
+        nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
+            "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
+        })
+        prompt = "[0s-3s] She stops.\n[3s-10s] She throws the helmet."
+        with patch.dict(sys.modules, {"nodes": nodes}):
+            self.module.MiniMaxH3DirectorContinuation.execute(
+                "bundle", prompt, "AV latent", 864, 480, seconds=0, fps=24,
+            )
+        self.assertEqual(received["seconds"], 10.0)
+
+    def test_manual_seconds_overrides_director_duration(self):
+        received = {}
+        nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
+            "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
+        })
+        with patch.dict(sys.modules, {"nodes": nodes}):
+            self.module.MiniMaxH3DirectorContinuation.execute(
+                "bundle", "[0s-10s] scene", "AV latent", 864, 480,
+                seconds=6.5, fps=24,
+            )
+        self.assertEqual(received["seconds"], 6.5)
+
+    def test_zero_seconds_requires_timed_director_prompt(self):
+        with self.assertRaisesRegex(ValueError, "no timed"):
+            self.module._director_scene_seconds("untimed prompt")
 
     def test_reports_missing_dependency(self):
         with patch.dict(sys.modules, {"nodes": types.SimpleNamespace(NODE_CLASS_MAPPINGS={})}):
             with self.assertRaisesRegex(RuntimeError, "Install and enable SatoDive"):
                 self.module.MiniMaxH3DirectorContinuation.execute(
-                    "bundle", "next shot", "AV latent", 864, 480,
+                    "bundle", "[0s-8s] next shot", "AV latent", 864, 480,
                 )
 
 
