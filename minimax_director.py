@@ -406,6 +406,8 @@ class MiniMaxH3Director(io.ComfyNode):
                 io.String.Output(display_name="retake_info",
                                  tooltip="JSON describing the retake window. Wire into MiniMax H3 Retake Stitch "
                                          "to splice the result back into the base video. Empty when retake is off."),
+                io.Custom("MINIMAX_H3_DIRECTOR_SCENE").Output(display_name="scene",
+                    tooltip="The compiled scene, exact duration, canvas and loaded reference media for SatoDive continuation."),
             ],
         )
 
@@ -667,9 +669,22 @@ class MiniMaxH3Director(io.ComfyNode):
                 "width": int(width), "height": int(height),
             })
 
+        scene_media = ([('image', image) for image in ref_image_tensors]
+                       + [('video', {'images': video, 'audio': ref_video_audios.get(
+                           'ref_video_audio_%d' % index), 'fps': MODEL_FPS})
+                          for index, video in enumerate(ref_videos.values())]
+                       + [('audio', audio) for audio in ref_audios.values()])
+        # Preserve the same ordering as the prompt's <Picture/Video/Audio N> labels.
+        # Video soundtracks are part of the reference video, not additional <Audio N> labels.
+        scene = {
+            'prompt': prompt, 'seconds': p['actual_seconds'], 'fps': MODEL_FPS,
+            'width': int(width), 'height': int(height), 'mode': p['mode'],
+            'media': tuple(scene_media),
+            'first_frame': first_frame, 'last_frame': last_frame,
+        }
         return io.NodeOutput(patched_model, conditioning, latent, audio_out,
                              MODEL_FPS, int(width), int(height), int(length), prompt,
-                             retake_info)
+                             retake_info, scene)
 
 
 NODE_CLASS_MAPPINGS = {"MiniMaxH3DirectorCS": MiniMaxH3Director}
