@@ -108,6 +108,44 @@ class ContinuationTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "no timed"):
             self.module._director_scene_seconds("untimed prompt")
 
+    def test_scene_payload_owns_prompt_timing_canvas_and_media(self):
+        received = {}
+        nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
+            "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
+        })
+        scene = {"prompt": "<Picture 1> and <Video 1>", "seconds": 5.708,
+                 "width": 480, "height": 864, "fps": 24.0,
+                 "media": (("image", "picture"), ("video", "clip"), ("audio", "voice")),
+                 "first_frame": None, "last_frame": None}
+        with patch.dict(sys.modules, {"nodes": nodes}):
+            self.module.MiniMaxH3DirectorContinuation.execute(
+                "bundle", "stale", "AV latent", 864, 480,
+                seconds=8, fps=30, scene=scene,
+            )
+        self.assertEqual(received["prompt"], scene["prompt"])
+        self.assertEqual((received["seconds"], received["fps"]), (5.708, 24.0))
+        self.assertEqual((received["width"], received["height"]), (480, 864))
+        self.assertEqual([received[f"media_{i}"] for i in range(1, 4)],
+                         ["picture", "clip", "voice"])
+        self.assertEqual(received["media_type_2"], "video")
+        self.assertEqual(received["seed_latent"], "AV latent")
+
+    def test_fl2va_scene_keeps_keyframes(self):
+        received = {}
+        nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
+            "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
+        })
+        scene = {"prompt": "One shot", "seconds": 4.542, "fps": 24,
+                 "width": 864, "height": 480, "media": (),
+                 "first_frame": "opening", "last_frame": "closing"}
+        with patch.dict(sys.modules, {"nodes": nodes}):
+            self.module.MiniMaxH3DirectorContinuation.execute(
+                "bundle", "stale", "latent", 864, 480, scene=scene,
+            )
+        self.assertEqual((received["first_frame"], received["last_frame"]),
+                         ("opening", "closing"))
+        self.assertEqual(received["seconds"], 4.542)
+
     def test_reports_missing_dependency(self):
         with patch.dict(sys.modules, {"nodes": types.SimpleNamespace(NODE_CLASS_MAPPINGS={})}):
             with self.assertRaisesRegex(RuntimeError, "Install and enable SatoDive"):
