@@ -181,41 +181,46 @@ any OpenAI-compatible endpoint) with automatic VRAM release before a run.
 
 ## Installation
 
-### Via ComfyUI Manager (recommended)
+### Install this V2
 
-1. Open **Manager → Custom Nodes Manager**
-2. Search for **MiniMax H3 Director**
-3. **Install**, then restart ComfyUI and reload the browser tab.
+Clone this repository into `ComfyUI/custom_nodes`, then install the separate SatoDive
+extension if you want latent saving and continuation:
 
-Not listed yet? Use **Manager → Install via Git URL** and paste:
-
-```
-https://github.com/seesee75-commits/ComfyUI-MiniMaxH3-Director
-```
-
-### Manual
-
-Clone into your `custom_nodes` folder and restart:
-
-```bash
+```powershell
 cd ComfyUI/custom_nodes
-git clone https://github.com/seesee75-commits/ComfyUI-MiniMaxH3-Director
+git clone https://github.com/Kostt3d/ComfyUI-MiniMaxH3-Director.git
+git clone https://github.com/SatoDive/Minimax-H3-Latent-Continuation.git
 ```
 
-On the Windows portable build the folder is
-`ComfyUI_windows_portable\ComfyUI\custom_nodes`.
+On Windows portable, use `ComfyUI_windows_portable\ComfyUI\custom_nodes`. On
+ComfyUI Desktop, open your instance's `custom_nodes` folder under its
+configured installation location. Install only **one** copy of H3 Director; if the original
+extension is already installed, update or replace that copy rather than keeping
+two versions in `custom_nodes`.
 
-There is **nothing to pip install** — the package declares no third-party dependencies.
+Alternatively, use **Manager → Install via Git URL** with this fork's URL,
+and install the SatoDive repository the same way. Searching for `MiniMax H3
+Director` by name may select the original extension rather than this fork.
+
+H3 Director itself has no extra pip requirements. Check SatoDive's own README
+for its dependencies. You also need the MiniMax H3 models selected in the
+workflow loader nodes; example filenames may differ from the files you use.
 
 Then restart ComfyUI **and hard-reload the browser** (Ctrl+F5). The timeline is a
 frontend extension; a stale cached `.js` is the single most common "node looks broken"
 report.
 
+Load the first-clip workflow from
+`example_workflows/MiniMax H3 Director + Save Latent.json`, then use
+`example_workflows/MiniMax H3 Director + Latent Continuation.json` for the next
+clip. Write the next prompt inside the Director timeline, select the previous
+clip's saved H3 latent and its matching MP4, and set the same resolution.
+
 ### Updating
 
 ```bash
 cd ComfyUI/custom_nodes/ComfyUI-MiniMaxH3-Director
-git pull
+git pull origin main
 ```
 
 ## Models
