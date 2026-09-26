@@ -13484,8 +13484,11 @@ app.registerExtension({
             if (node.setDirtyCanvas) node.setDirtyCanvas(true, true);
           };
 
+          // DOM widgets may size to their content instead of the node width. Give this
+          // toolbar a real width so Preset and Aspect / MP are readable on loaded graphs.
           Object.assign(panelRoot.style, {
-            display: "flex", gap: "8px", width: "100%", boxSizing: "border-box", padding: "0 2px",
+            display: "flex", gap: "8px", width: "min(100%, 650px)",
+            minWidth: "min(100%, 650px)", boxSizing: "border-box", padding: "0 2px",
           });
 
           const mkCol = (title) => {
@@ -13527,6 +13530,7 @@ app.registerExtension({
 
           // ---------- LEFT: Resolution ----------
           const left = mkCol("Resolution");
+          left.style.flex = "0 0 365px";
           // MiniMax H3's native canvas is a 768 px short edge capped at 768x1344, and every
           // edge here is a multiple of 32: H3's own step, and what divisible_by defaults to,
           // so a preset is never quietly floored to something else on the way in.
@@ -13858,7 +13862,7 @@ app.registerExtension({
         // Tall enough for the longer of the two columns: Resolution carries six rows since
         // the aspect/megapixel row joined it, and a DOM widget that is short by a row
         // clips it rather than scrolling.
-        settingsWidget.computeSize = function () { return [0, 210]; };
+        settingsWidget.computeSize = function () { return [650, 210]; };
         const _mmxOrigOnConfigure = this.onConfigure;
         this.onConfigure = function () {
           if (_mmxOrigOnConfigure) _mmxOrigOnConfigure.apply(this, arguments);
