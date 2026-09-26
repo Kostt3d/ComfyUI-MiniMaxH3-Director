@@ -1,5 +1,39 @@
 # ComfyUI MiniMax H3 Director
 
+## Experimental latent continuation (Director v2)
+
+This fork adds **MiniMax H3 Director Latent Continuation**, an optional bridge
+between the Director timeline and [SatoDive's MiniMax H3 Latent Continuation](https://github.com/SatoDive/Minimax-H3-Latent-Continuation).
+The original Director generation path is unchanged. The bridge passes its
+compiled storyboard prompt and the previous joint video/audio latent to
+SatoDive's Context Segments renderer. It does not decode and re-encode that
+latent. Install both extensions in separate `custom_nodes` directories and
+restart ComfyUI.
+
+The two workflows keep **MiniMax H3 Director as the prompt editor**:
+
+1. Open [`MiniMax H3 Director + Save Latent.json`](example_workflows/MiniMax%20H3%20Director%20%2B%20Save%20Latent.json) for the first clip. This keeps the existing Director generation and video save path, with SatoDive's Save H3 Latent connected to the **sampled** AV latent before video decoding. Name the scene on Save H3 Latent and run the workflow.
+2. Open [`MiniMax H3 Director + Latent Continuation.json`](example_workflows/MiniMax%20H3%20Director%20%2B%20Latent%20Continuation.json) for each subsequent clip. Do not write the new prompt in SatoDive Context Segments; the continuation bridge receives the compiled prompt from your Director timeline.
+
+3. Select that clip's `.h3latent.safetensors` in SatoDive **Load H3 Latent**.
+4. Select its matching MP4 in **LoadVideo** for stitching and source audio.
+5. Edit the **Director** timeline for the next shot. Its compiled `prompt`,
+   `width` and `height` outputs feed **Director Latent Continuation**.
+6. Set `seconds` on the continuation node to match the Director timeline.
+   The Director does not currently expose seconds as an output.
+7. Keep the saved latent's exact pixel dimensions. Start with a short test.
+
+**Current scope:** Only the Director's compiled text and dimensions pass
+through this bridge. Images, videos and audio embedded in its timeline must
+also be supplied to SatoDive when the next prompt refers to them. The original
+Director sampler is not used for continuation; SatoDive Segment Sample, Decode
+and Stitch render the next clip. Unit and JSON structure checks pass, and the
+underlying handoff worked manually on 864×480 clips. This exact new bridge node
+still needs a ComfyUI render test. Seam and audio continuity require inspection.
+
+The Director code remains GPL-3.0. SatoDive is an external MIT-licensed
+dependency; its code is not copied into this fork.
+
 **A timeline editor for [MiniMax H3](https://huggingface.co/Comfy-Org/MiniMax-H3) inside ComfyUI.**
 Drag images, videos and music onto tracks, trim them on a ruler, write a prompt per shot,
 press Run. Instead of one prompt box for a whole clip you get a storyboard — and you can
