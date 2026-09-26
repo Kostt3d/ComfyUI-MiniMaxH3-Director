@@ -83,6 +83,8 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
                 io.Float.Input("fps", default=24.0, min=1.0, max=120.0),
                 io.Int.Input("context_length", default=22, min=1, max=128),
                 io.Video.Input("seed_video", optional=True),
+                io.Custom("MINIMAX_H3_DIRECTOR_SCENE").Input("scene", optional=True,
+                    tooltip="Connect Director.scene to inherit its exact prompt, duration, canvas, FPS and references."),
             ],
             outputs=[
                 io.Model.Output(display_name="model"),
@@ -93,8 +95,22 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
     @classmethod
     def execute(
         cls, h3_bundle, director_prompt, seed_latent, width, height,
-        seconds=0.0, fps=24.0, context_length=22, seed_video=None,
+        seconds=0.0, fps=24.0, context_length=22, seed_video=None, scene=None,
     ):
+        media_inputs = {}
+        if scene is not None:
+            if not isinstance(scene, dict):
+                raise ValueError("Director scene payload is invalid; reconnect Director.scene.")
+            director_prompt = scene['prompt']
+            width, height = scene['width'], scene['height']
+            fps = scene['fps']
+            seconds = scene['seconds']
+            for index, (kind, value) in enumerate(scene.get('media', ()), 1):
+                media_inputs[f'media_{index}'] = value
+                media_inputs[f'media_type_{index}'] = kind
+            if not scene['media']:
+                media_inputs['first_frame'] = scene.get('first_frame')
+                media_inputs['last_frame'] = scene.get('last_frame')
         if not str(director_prompt).strip():
             raise ValueError("Director prompt is empty; add a shot to the timeline.")
         if int(width) < 32 or int(height) < 32:
@@ -140,6 +156,7 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
             seed_latent=seed_latent,
             seed_video=seed_video,
         )
+        defaults.update(media_inputs)
         model, context = context_class.generate(**defaults)
         return io.NodeOutput(model, context)
 
