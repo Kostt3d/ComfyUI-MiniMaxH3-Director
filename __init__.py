@@ -1,7 +1,10 @@
 from comfy_api.latest import ComfyExtension, io
 from typing_extensions import override
 
-from .minimax_director import MiniMaxH3Director
+# Keep the public node id/UI identical while using the performance wrapper. The wrapper
+# delegates normal renders to the original Director and only changes behaviour when the
+# new compile_only continuation mode is enabled.
+from .minimax_perf import MiniMaxH3DirectorOptimized as MiniMaxH3Director
 from .minimax_enhance import MiniMaxH3EnhancePrompt
 from .minimax_lastframe import MiniMaxH3SaveLastFrame
 from .minimax_preview import MiniMaxH3PreviewOverride
