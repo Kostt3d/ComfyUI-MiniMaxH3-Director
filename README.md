@@ -11,6 +11,9 @@ Segments renderer. The saved latent is not decoded and re-encoded. Install both
 extensions in separate `custom_nodes` directories and restart ComfyUI.
 
 The two workflows keep **MiniMax H3 Director as the prompt editor**:
+Their example Director nodes start with the same sample timeline and settings.
+Edits made to one workflow are not automatically copied to the other: save
+and load your edited Director node or workflow to reuse your own references.
 
 1. Open [`MiniMax H3 Director + Save Latent.json`](example_workflows/MiniMax%20H3%20Director%20%2B%20Save%20Latent.json) for the first clip. This keeps the existing Director generation and video save path, with SatoDive's Save H3 Latent connected to the **sampled** AV latent before video decoding. Name the scene on Save H3 Latent and run the workflow.
 2. Open [`MiniMax H3 Director + Latent Continuation.json`](example_workflows/MiniMax%20H3%20Director%20%2B%20Latent%20Continuation.json) for each subsequent clip. Do not write the new prompt in SatoDive Context Segments; the continuation bridge receives the compiled prompt from your Director timeline.
