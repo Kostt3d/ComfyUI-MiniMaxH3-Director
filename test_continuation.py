@@ -62,20 +62,6 @@ class ContinuationTest(unittest.TestCase):
                 return "model", "context"
         return Context
 
-    def test_first_run_works_without_seed_latent(self):
-        received = {}
-        nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
-            "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
-        })
-        with patch.dict(sys.modules, {"nodes": nodes}):
-            result = self.module.MiniMaxH3DirectorContinuation.execute(
-                "bundle", "[0s-8s] First clip", 480, 864,
-                seconds=8, low_vram_cleanup=False, profile=False,
-            )
-        self.assertEqual(result, ("model", "context"))
-        self.assertIsNone(received["seed_latent"])
-        self.assertEqual(received["ref_image_size"], "match")
-
     def test_passes_director_prompt_and_native_latent_to_sato(self):
         received = {}
         nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
@@ -84,7 +70,7 @@ class ContinuationTest(unittest.TestCase):
         with patch.dict(sys.modules, {"nodes": nodes}):
             result = self.module.MiniMaxH3DirectorContinuation.execute(
                 "bundle", "[0s-8s] He picks up the necklace", 864, 480,
-                seed_latent="AV latent", seconds=8, fps=24,
+                seconds=8, fps=24, seed_latent="AV latent",
                 low_vram_cleanup=False, profile=False,
             )
         self.assertEqual(result, ("model", "context"))
@@ -95,6 +81,19 @@ class ContinuationTest(unittest.TestCase):
         self.assertEqual(received["continuity_mode"], "Native Guide")
         self.assertEqual(received["seconds"], 8)
 
+    def test_first_clip_allows_no_seed_latent(self):
+        received = {}
+        nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
+            "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
+        })
+        with patch.dict(sys.modules, {"nodes": nodes}):
+            result = self.module.MiniMaxH3DirectorContinuation.execute(
+                "bundle", "[0s-8s] first clip", 480, 864,
+                seconds=8, seed_latent=None, low_vram_cleanup=False, profile=False,
+            )
+        self.assertEqual(result, ("model", "context"))
+        self.assertIsNone(received["seed_latent"])
+
     def test_zero_seconds_inherits_director_scene_duration(self):
         received = {}
         nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
@@ -103,8 +102,8 @@ class ContinuationTest(unittest.TestCase):
         prompt = "[0s-3s] She stops.\n[3s-10s] She throws the helmet."
         with patch.dict(sys.modules, {"nodes": nodes}):
             self.module.MiniMaxH3DirectorContinuation.execute(
-                "bundle", prompt, 864, 480, seed_latent="AV latent",
-                seconds=0, fps=24, low_vram_cleanup=False, profile=False,
+                "bundle", prompt, 864, 480, seconds=0, fps=24,
+                low_vram_cleanup=False, profile=False,
             )
         self.assertEqual(received["seconds"], 10.0)
 
@@ -116,8 +115,7 @@ class ContinuationTest(unittest.TestCase):
         with patch.dict(sys.modules, {"nodes": nodes}):
             self.module.MiniMaxH3DirectorContinuation.execute(
                 "bundle", "[0s-10s] scene", 864, 480,
-                seed_latent="AV latent", seconds=6.5, fps=24,
-                low_vram_cleanup=False, profile=False,
+                seconds=6.5, fps=24, low_vram_cleanup=False, profile=False,
             )
         self.assertEqual(received["seconds"], 6.5)
 
@@ -137,9 +135,8 @@ class ContinuationTest(unittest.TestCase):
                  "compile_only": True, "active_ref_slots": (1, 7), "pruned_ref_slots": (6, 8, 9)}
         with patch.dict(sys.modules, {"nodes": nodes}):
             self.module.MiniMaxH3DirectorContinuation.execute(
-                "bundle", "stale", 864, 480, seed_latent="AV latent",
-                seconds=8, fps=30, scene=scene,
-                low_vram_cleanup=False, profile=False,
+                "bundle", "stale", 864, 480,
+                seconds=8, fps=30, scene=scene, low_vram_cleanup=False, profile=False,
             )
         self.assertEqual(received["prompt"], scene["prompt"])
         self.assertEqual((received["seconds"], received["fps"]), (5.708, 24.0))
@@ -147,7 +144,6 @@ class ContinuationTest(unittest.TestCase):
         self.assertEqual([received[f"media_{i}"] for i in range(1, 4)],
                          ["picture", "clip", "voice"])
         self.assertEqual(received["media_type_2"], "video")
-        self.assertEqual(received["seed_latent"], "AV latent")
 
     def test_fl2va_scene_keeps_keyframes(self):
         received = {}
@@ -159,7 +155,7 @@ class ContinuationTest(unittest.TestCase):
                  "first_frame": "opening", "last_frame": "closing"}
         with patch.dict(sys.modules, {"nodes": nodes}):
             self.module.MiniMaxH3DirectorContinuation.execute(
-                "bundle", "stale", 864, 480, seed_latent="latent", scene=scene,
+                "bundle", "stale", 864, 480, scene=scene,
                 low_vram_cleanup=False, profile=False,
             )
         self.assertEqual((received["first_frame"], received["last_frame"]),
@@ -171,10 +167,10 @@ class ContinuationTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "Install and enable SatoDive"):
                 self.module.MiniMaxH3DirectorContinuation.execute(
                     "bundle", "[0s-8s] next shot", 864, 480,
-                    seed_latent="AV latent", low_vram_cleanup=False, profile=False,
+                    low_vram_cleanup=False, profile=False,
                 )
 
-    def test_context_length_is_forwarded(self):
+    def test_context_length_and_ref_size_are_forwarded(self):
         received = {}
         nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
             "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
@@ -182,23 +178,11 @@ class ContinuationTest(unittest.TestCase):
         with patch.dict(sys.modules, {"nodes": nodes}):
             self.module.MiniMaxH3DirectorContinuation.execute(
                 "bundle", "[0s-8s] next shot", 864, 480,
-                seed_latent="AV latent", seconds=8, context_length=5,
+                seconds=8, context_length=5, ref_image_size="match",
                 low_vram_cleanup=False, profile=False,
             )
         self.assertEqual(received["context_length"], 5)
-
-    def test_ref_image_size_is_forwarded(self):
-        received = {}
-        nodes = types.SimpleNamespace(NODE_CLASS_MAPPINGS={
-            "MiniMaxH3EasyContextSegments_SatoDive": self._context(received),
-        })
-        with patch.dict(sys.modules, {"nodes": nodes}):
-            self.module.MiniMaxH3DirectorContinuation.execute(
-                "bundle", "[0s-8s] next shot", 864, 480,
-                seed_latent="AV latent", seconds=8, ref_image_size="1k",
-                low_vram_cleanup=False, profile=False,
-            )
-        self.assertEqual(received["ref_image_size"], "1k")
+        self.assertEqual(received["ref_image_size"], "match")
 
 
 if __name__ == "__main__":
