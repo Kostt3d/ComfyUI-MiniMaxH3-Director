@@ -1337,14 +1337,14 @@
           "link": 1104
         },
         {
-          "localized_name": "model (t2v/i2v)",
+          "localized_name": "model",
           "name": "model",
           "shape": 7,
           "type": "MODEL",
           "link": 1854
         },
         {
-          "localized_name": "model (ref2v)",
+          "localized_name": "model_ref2va",
           "name": "model_ref2va",
           "shape": 7,
           "type": "MODEL",
@@ -1390,6 +1390,56 @@
           "name": "duration",
           "shape": 7,
           "type": "FLOAT",
+          "link": null
+        },
+        {
+          "localized_name": "frame_rate",
+          "name": "frame_rate",
+          "shape": 7,
+          "type": "FLOAT",
+          "widget": {
+            "name": "frame_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "custom_width",
+          "name": "custom_width",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "custom_width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "custom_height",
+          "name": "custom_height",
+          "shape": 7,
+          "type": "INT",
+          "widget": {
+            "name": "custom_height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "resize_method",
+          "name": "resize_method",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "resize_method"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "ref_image_size",
+          "name": "ref_image_size",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "ref_image_size"
+          },
           "link": null
         },
         {
@@ -1496,8 +1546,10 @@
         }
       ],
       "properties": {
+        "aux_id": "CGlide/ComfyUI-MiniMaxH3-Director",
+        "ver": "0.1.0",
         "Node name for S&R": "MiniMaxH3DirectorCS",
-        "global_prompt": "",
+        "global_prompt": "Cinematic desert chase, late afternoon golden hour, anamorphic lens, shallow depth of field, fine film grain, warm sand tones against a deep blue sky, handheld energy.\nAudio: a low engine rumble that rises and falls with the throttle, wind across the microphone, sand hissing under the tyres, a sparse percussive score underneath.",
         "mainTrackEnabled": true,
         "audioTrackEnabled": true,
         "motionTrackEnabled": true,
@@ -1512,29 +1564,27 @@
         "use_custom_motion": true,
         "frame_rate": 24,
         "display_mode": "seconds",
-        "custom_width": 864,
-        "custom_height": 480,
-        "resize_method": "maintain aspect ratio",
+        "custom_width": 1344,
+        "custom_height": 768,
+        "resize_method": "crop",
         "divisible_by": 32,
         "img_compression": 0,
         "guide_strength": "",
-        "local_prompts": "",
-        "segment_lengths": "",
-        "timeline_data": "{}",
+        "local_prompts": "wide establishing shot: the rider crests the dune, engine roaring, sand spraying off the rear wheel into the low sun | cut to a low tracking shot alongside the bike, heat haze rippling, the horizon tilting as she leans into the turn | cut to a close-up on her visor, the dunes reflected in it, she exhales and the engine note drops away",
+        "segment_lengths": "36,48,36",
+        "timeline_data": "{\"mainTrackEnabled\":true,\"audioTrackEnabled\":true,\"motionTrackEnabled\":true,\"propHeight\":90,\"globalPropHeight\":85,\"showFilenames\":true,\"showPromptZones\":true,\"overrideAudio\":false,\"inpaint_audio\":true,\"global_prompt\":\"Cinematic desert chase, late afternoon golden hour, anamorphic lens, shallow depth of field, fine film grain, warm sand tones against a deep blue sky, handheld energy.\\nAudio: a low engine rumble that rises and falls with the throttle, wind across the microphone, sand hissing under the tyres, a sparse percussive score underneath.\",\"retake_global_prompt\":\"\",\"retakeMode\":false,\"retakeStart\":24,\"retakeLength\":48,\"retakePrompt\":\"\",\"retakeStrength\":1,\"retakeVideo\":null,\"normalStartFrame\":0,\"normalDurationFrames\":120,\"reference_mode\":\"OFF\",\"prompt_format\":\"minimax\",\"analyzeProvider\":\"ollama\",\"analyzeBaseUrl\":\"\",\"analyzeModel\":\"\",\"characters\":[{\"images\":[],\"description\":\"\"},{\"images\":[],\"description\":\"\"},{\"images\":[],\"description\":\"\"}],\"segments\":[{\"id\":\"seg0\",\"start\":0,\"length\":36,\"prompt\":\"wide establishing shot: the rider crests the dune, engine roaring, sand spraying off the rear wheel into the low sun\",\"type\":\"text\",\"isEndFrame\":false},{\"id\":\"seg1\",\"start\":36,\"length\":48,\"prompt\":\"cut to a low tracking shot alongside the bike, heat haze rippling, the horizon tilting as she leans into the turn\",\"type\":\"text\",\"isEndFrame\":false},{\"id\":\"seg2\",\"start\":84,\"length\":36,\"prompt\":\"cut to a close-up on her visor, the dunes reflected in it, she exhales and the engine note drops away\",\"type\":\"text\",\"isEndFrame\":false}],\"motionSegments\":[],\"audioSegments\":[]}",
         "shift_video": 12,
         "shift_audio": 3,
         "ref_image_size": "match",
         "start_second": 0,
-        "end_second": 7.708,
-        "duration_seconds": 7.708,
+        "end_second": 5,
+        "duration_seconds": 5,
         "start_frame": 0,
-        "end_frame": 185,
-        "duration_frames": 185,
-        "aux_id": "CGlide/ComfyUI-MiniMaxH3-Director",
-        "ver": "0.1.0",
+        "end_frame": 120,
+        "duration_frames": 120,
         "cnr_id": "minimaxh3-director",
-        "propHeight": 186,
-        "globalPropHeight": 126,
+        "propHeight": 90,
+        "globalPropHeight": 85,
         "timeline_ui": "",
         "minimax_settings_ui": "",
         "retakeMode": false,
@@ -1545,23 +1595,23 @@
       },
       "widgets_values": [
         0,
-        7.708,
-        7.708,
+        5,
+        5,
         0,
-        185,
-        185,
-        "{}",
-        "",
-        "",
+        120,
+        120,
+        "{\"mainTrackEnabled\":true,\"audioTrackEnabled\":true,\"motionTrackEnabled\":true,\"propHeight\":90,\"globalPropHeight\":85,\"showFilenames\":true,\"showPromptZones\":true,\"overrideAudio\":false,\"inpaint_audio\":true,\"global_prompt\":\"Cinematic desert chase, late afternoon golden hour, anamorphic lens, shallow depth of field, fine film grain, warm sand tones against a deep blue sky, handheld energy.\\nAudio: a low engine rumble that rises and falls with the throttle, wind across the microphone, sand hissing under the tyres, a sparse percussive score underneath.\",\"retake_global_prompt\":\"\",\"retakeMode\":false,\"retakeStart\":24,\"retakeLength\":48,\"retakePrompt\":\"\",\"retakeStrength\":1,\"retakeVideo\":null,\"normalStartFrame\":0,\"normalDurationFrames\":120,\"reference_mode\":\"OFF\",\"prompt_format\":\"minimax\",\"analyzeProvider\":\"ollama\",\"analyzeBaseUrl\":\"\",\"analyzeModel\":\"\",\"characters\":[{\"images\":[],\"description\":\"\"},{\"images\":[],\"description\":\"\"},{\"images\":[],\"description\":\"\"}],\"segments\":[{\"id\":\"seg0\",\"start\":0,\"length\":36,\"prompt\":\"wide establishing shot: the rider crests the dune, engine roaring, sand spraying off the rear wheel into the low sun\",\"type\":\"text\",\"isEndFrame\":false},{\"id\":\"seg1\",\"start\":36,\"length\":48,\"prompt\":\"cut to a low tracking shot alongside the bike, heat haze rippling, the horizon tilting as she leans into the turn\",\"type\":\"text\",\"isEndFrame\":false},{\"id\":\"seg2\",\"start\":84,\"length\":36,\"prompt\":\"cut to a close-up on her visor, the dunes reflected in it, she exhales and the engine note drops away\",\"type\":\"text\",\"isEndFrame\":false}],\"motionSegments\":[],\"audioSegments\":[]}",
+        "wide establishing shot: the rider crests the dune, engine roaring, sand spraying off the rear wheel into the low sun | cut to a low tracking shot alongside the bike, heat haze rippling, the horizon tilting as she leans into the turn | cut to a close-up on her visor, the dunes reflected in it, she exhales and the engine note drops away",
+        "36,48,36",
         "",
         true,
         true,
         true,
         24,
         "seconds",
-        864,
-        480,
-        "maintain aspect ratio",
+        1344,
+        768,
+        "crop",
         32,
         0,
         false,
