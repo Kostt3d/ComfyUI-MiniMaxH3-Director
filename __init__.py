@@ -46,7 +46,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "MiniMaxH3RetakeStitchCS": "MiniMax H3 Retake Stitch",
     "MiniMaxH3EnhancePromptCS": "MiniMax H3 Enhance Prompt",
     "MiniMaxH3SaveLastFrameCS": "MiniMax H3 Save Last Frame",
-    "MiniMaxH3DirectorContinuationCS": "MiniMax H3 Director Latent Continuation",
+    "MiniMaxH3DirectorContinuationCS": "MiniMax H3 Director 12GB Engine",
     "MiniMaxH3DirectorMasterChainCS": "MiniMax H3 Director 12GB Master Chain",
 }
 
