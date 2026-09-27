@@ -12,6 +12,8 @@ Performance notes:
   Qwen/VAE/H3 conditioning pass before SatoDive;
 - ``ref_image_size=match`` is the 12 GB default. It follows the output pixel area and
   avoids inflating every reference image to ~1 MP on a 480x864 render;
+- ``context_length=5`` is the RTX 5070 12 GB production default after real continuation
+  testing showed the larger 22-frame window could cross a severe memory/offload cliff;
 - optional low-VRAM cleanup releases Python/CUDA cache garbage before SatoDive builds
   the context;
 - profiling logs timing, media count and CUDA memory so slowdowns are diagnosable.
@@ -121,10 +123,11 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
                 ),
                 io.Float.Input("fps", default=24.0, min=1.0, max=120.0),
                 io.Int.Input(
-                    "context_length", default=22, min=5, max=73, step=17,
+                    "context_length", default=5, min=5, max=73, step=17,
                     tooltip=(
-                        "Continuation only. Native H3 guide window. 22 is the production "
-                        "default; use 5 only to diagnose memory pressure."
+                        "Native H3 continuation guide window. 5 is the validated RTX 5070 "
+                        "12 GB production default. Increase only after A/B testing on GPUs "
+                        "with more memory headroom."
                     ),
                 ),
                 io.Combo.Input(
@@ -177,7 +180,7 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
     @classmethod
     def execute(
         cls, h3_bundle, director_prompt, width, height,
-        seconds=0.0, fps=24.0, context_length=22, ref_image_size="match",
+        seconds=0.0, fps=24.0, context_length=5, ref_image_size="match",
         seed_latent=None, seed_video=None, scene=None,
         low_vram_cleanup=True, profile=True,
     ):
