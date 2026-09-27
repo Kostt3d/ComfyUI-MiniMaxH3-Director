@@ -1,15 +1,20 @@
-"""Bridge the Director storyboard to SatoDive's native AV latent continuation.
+"""Bridge the Director storyboard to SatoDive's native AV segment engine.
 
-This node deliberately delegates context planning to the installed SatoDive extension.
-It does not decode and re-encode the previous clip.
+The same bridge can now render both the first clip and later latent continuations:
+- leave ``seed_latent`` unconnected for the first clip;
+- connect a latent saved by SatoDive for clip 2 onward.
+
+This deliberately delegates H3 conditioning/context planning to the installed SatoDive
+extension. It does not decode and re-encode a previous clip.
 
 Performance notes:
-- use the Director's compile_only mode in continuation workflows so the Director does not
-  run a duplicate Qwen/VAE/H3 conditioning pass before SatoDive;
-- optional low-VRAM cleanup releases Python/CUDA cache garbage before SatoDive builds the
-  continuation context;
-- profiling logs timing, media count and CUDA memory so slowdowns are diagnosable instead
-  of being a black box.
+- use the Director's ``compile_only`` mode so Director does not run a duplicate
+  Qwen/VAE/H3 conditioning pass before SatoDive;
+- ``ref_image_size=match`` is the 12 GB default. It follows the output pixel area and
+  avoids inflating every reference image to ~1 MP on a 480x864 render;
+- optional low-VRAM cleanup releases Python/CUDA cache garbage before SatoDive builds
+  the context;
+- profiling logs timing, media count and CUDA memory so slowdowns are diagnosable.
 """
 
 from __future__ import annotations
@@ -44,9 +49,9 @@ def _director_scene_seconds(director_prompt):
     ends = [float(value) for value in _SHOT_RANGE_RE.findall(str(director_prompt))]
     if not ends:
         raise ValueError(
-            "Continuation seconds is 0 (Director duration mode), but the Director prompt "
-            "contains no timed [start-end] shot markers. Set seconds manually, or connect "
-            "the compiled prompt output from MiniMax H3 Director."
+            "Seconds is 0 (Director duration mode), but the Director prompt contains no "
+            "timed [start-end] shot markers. Set seconds manually, or connect the compiled "
+            "prompt output from MiniMax H3 Director."
         )
     seconds = max(ends)
     if seconds <= 0:
@@ -57,13 +62,10 @@ def _director_scene_seconds(director_prompt):
 def _context_node():
     import nodes
 
-    node_class = nodes.NODE_CLASS_MAPPINGS.get(
-        "MiniMaxH3EasyContextSegments_SatoDive"
-    )
+    node_class = nodes.NODE_CLASS_MAPPINGS.get("MiniMaxH3EasyContextSegments_SatoDive")
     if node_class is None:
         raise RuntimeError(
-            "Install and enable SatoDive/Minimax-H3-Latent-Continuation, "
-            "then restart ComfyUI."
+            "Install and enable SatoDive/Minimax-H3-Latent-Continuation, then restart ComfyUI."
         )
     return node_class
 
@@ -92,44 +94,62 @@ def _low_vram_cleanup():
 
 
 class MiniMaxH3DirectorContinuation(io.ComfyNode):
-    """Use the Director's compiled timeline as the next SatoDive segment prompt."""
+    """Compile a Director scene through SatoDive, optionally continuing a saved latent."""
 
     @classmethod
     def define_schema(cls):
         return io.Schema(
             node_id="MiniMaxH3DirectorContinuationCS",
-            display_name="MiniMax H3 Director Latent Continuation",
+            display_name="MiniMax H3 Director 12GB Engine",
             category="MiniMax H3 Director",
             description=(
-                "Connect Director.prompt and the prior SatoDive AV latent. "
-                "With seconds=0, the continuation duration is read automatically from "
-                "the Director storyboard timeline. Set seconds above 0 only to override it. "
-                "For best 12 GB performance enable Director compile_only and connect scene."
+                "Fast Director -> SatoDive execution bridge. Leave seed_latent unconnected "
+                "for clip 1; connect a saved H3 latent for clip 2 onward. For best 12 GB "
+                "performance enable Director compile_only + auto_prune_refs and connect scene."
             ),
             inputs=[
                 H3Bundle.Input("h3_bundle"),
                 io.String.Input("director_prompt", force_input=True),
-                io.Latent.Input("seed_latent"),
                 io.Int.Input("width", force_input=True, min=32, max=8192),
                 io.Int.Input("height", force_input=True, min=32, max=8192),
                 io.Float.Input(
                     "seconds", default=0.0, min=0.0, max=120.0,
                     tooltip=(
-                        "0 = automatically use this Director scene's timeline duration. "
-                        "Set a value above 0 to override the Director duration."
+                        "0 = use this Director scene's timeline duration. Set above 0 only "
+                        "to override Director timing."
                     ),
                 ),
                 io.Float.Input("fps", default=24.0, min=1.0, max=120.0),
                 io.Int.Input(
                     "context_length", default=22, min=5, max=73, step=17,
-                    tooltip="Native H3 guide window. Recommended: 22. Use 5 only for low-VRAM diagnosis."
+                    tooltip=(
+                        "Continuation only. Native H3 guide window. 22 is the production "
+                        "default; use 5 only to diagnose memory pressure."
+                    ),
+                ),
+                io.Combo.Input(
+                    "ref_image_size",
+                    options=["match", "1k", "1.5k", "2k", "original"],
+                    default="match",
+                    tooltip=(
+                        "Reference resize policy. 'match' follows the output pixel area and "
+                        "is strongly recommended on 12 GB GPUs."
+                    ),
+                ),
+                io.Latent.Input(
+                    "seed_latent", optional=True,
+                    tooltip=(
+                        "Leave unconnected for the first clip. For continuation, connect a "
+                        "latent produced by MiniMax H3 Save Latent."
+                    ),
                 ),
                 io.Video.Input("seed_video", optional=True),
                 io.Custom("MINIMAX_H3_DIRECTOR_SCENE").Input(
                     "scene", optional=True,
                     tooltip=(
-                        "Connect Director.scene to inherit exact prompt, duration, canvas, FPS and refs. "
-                        "Enable Director compile_only to avoid a duplicate conditioning pass."
+                        "Connect Director.scene to inherit exact prompt, duration, canvas, FPS "
+                        "and auto-pruned refs. Enable Director compile_only to avoid duplicate "
+                        "conditioning."
                     ),
                 ),
                 io.Boolean.Input(
@@ -145,7 +165,7 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
                     "profile", default=True, optional=True, advanced=True,
                     label_on="Profile",
                     label_off="Quiet",
-                    tooltip="Log continuation setup time, reference count and VRAM usage to the ComfyUI console.",
+                    tooltip="Log setup time, reference count and VRAM usage to the ComfyUI console.",
                 ),
             ],
             outputs=[
@@ -156,8 +176,9 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
 
     @classmethod
     def execute(
-        cls, h3_bundle, director_prompt, seed_latent, width, height,
-        seconds=0.0, fps=24.0, context_length=22, seed_video=None, scene=None,
+        cls, h3_bundle, director_prompt, width, height,
+        seconds=0.0, fps=24.0, context_length=22, ref_image_size="match",
+        seed_latent=None, seed_video=None, scene=None,
         low_vram_cleanup=True, profile=True,
     ):
         started = time.perf_counter()
@@ -192,6 +213,7 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
         if resolved_seconds <= 0:
             resolved_seconds = _director_scene_seconds(director_prompt)
 
+        run_kind = "continuation" if seed_latent is not None else "first clip"
         if bool(profile):
             ref_bits = ""
             if active_refs:
@@ -199,12 +221,15 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
             if pruned_refs:
                 ref_bits += " pruned=" + ",".join("@ref%d" % n for n in pruned_refs)
             log.info(
-                "[MiniMaxDirectorContinuation] start %.2fs %dx%d context=%d media=%d compile_only=%s%s | %s",
+                "[MiniMaxDirector12GB] %s | %.2fs %dx%d context=%d ref_size=%s media=%d "
+                "compile_only=%s%s | %s",
+                run_kind,
                 resolved_seconds,
                 int(width),
                 int(height),
                 int(context_length),
-                len(media_inputs) // 2,
+                str(ref_image_size),
+                len(scene.get("media", ())) if isinstance(scene, dict) else 0,
                 scene_compile_only,
                 ref_bits,
                 _cuda_memory_text(),
@@ -213,15 +238,14 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
         if bool(low_vram_cleanup):
             _low_vram_cleanup()
             if bool(profile):
-                log.info("[MiniMaxDirectorContinuation] after cleanup | %s", _cuda_memory_text())
+                log.info("[MiniMaxDirector12GB] after cleanup | %s", _cuda_memory_text())
 
         context_class = _context_node()
         required = context_class.INPUT_TYPES()["required"]
         defaults = {
             name: spec[1].get("default")
             for name, spec in required.items()
-            if len(spec) > 1 and isinstance(spec[1], dict)
-            and "default" in spec[1]
+            if len(spec) > 1 and isinstance(spec[1], dict) and "default" in spec[1]
         }
         defaults.update(
             h3_bundle=h3_bundle,
@@ -241,7 +265,7 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
             advanced=False,
             fps=float(fps),
             keyframe_role="First frame priority",
-            ref_image_size="1K area (~1MP)",
+            ref_image_size=str(ref_image_size),
             reference_mention_mode="By index",
             context_prompt_optimizer_mode="1",
             context_prompt_optimizer_concurrency=1,
@@ -257,15 +281,15 @@ class MiniMaxH3DirectorContinuation(io.ComfyNode):
         if bool(profile):
             total = time.perf_counter() - started
             log.info(
-                "[MiniMaxDirectorContinuation] context ready in %.2fs (total %.2fs) | %s",
+                "[MiniMaxDirector12GB] context ready in %.2fs (total %.2fs) | %s",
                 setup_elapsed,
                 total,
                 _cuda_memory_text(),
             )
             if scene is not None and not scene_compile_only:
                 log.warning(
-                    "[MiniMaxDirectorContinuation] Director scene was produced in FULL mode. "
-                    "Enable Director -> compile_only for continuation to skip duplicate Qwen/VAE/H3 conditioning."
+                    "[MiniMaxDirector12GB] Director scene was produced in FULL mode. Enable "
+                    "Director -> compile_only to skip duplicate Qwen/VAE/H3 conditioning."
                 )
 
         return io.NodeOutput(model, context)
@@ -276,5 +300,5 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "MiniMaxH3DirectorContinuationCS": "MiniMax H3 Director Latent Continuation",
+    "MiniMaxH3DirectorContinuationCS": "MiniMax H3 Director 12GB Engine",
 }
