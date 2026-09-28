@@ -2,7 +2,7 @@
   "id": "c64cb5fc-f369-4ed0-a135-9c9ff664c12b",
   "revision": 0,
   "last_node_id": 26,
-  "last_link_id": 32,
+  "last_link_id": 33,
   "nodes": [
     {
       "id": 1,
@@ -23,7 +23,7 @@
       "title": "H3 DIRECTOR 12GB • ARCHITECTURE",
       "properties": {},
       "widgets_values": [
-        "# H3 DIRECTOR 12GB — ULTIMATE V2 MASTER CHAIN\n\nArchitecture production pour **RTX 5070 12 Go + 48 Go RAM + i9-9900KF**.\n\n## Deux chaînes distinctes, dans le même workflow\n1. **Latent chain**: continuité H3 lossless d'une génération à la suivante.\n2. **Master chain**: construit automatiquement GEN01, puis GEN01+02, puis GEN01+02+03, etc.\n\n### Preset validé 12 Go\n- Qwen3-VL 4B FP8 + ClipProj\n- REF2VA FP8 scaled uniquement\n- Turbo REF2VA 8-step\n- 480×864, 24 fps\n- context_length **5**\n- ref_image_size **match**\n- Auto Ref Prune ON\n- Director Compile Only ON\n- Native PyTorch attention on CUDA 13 / cu130\n- Optional KJ/SageAttention node kept BYPASSED by default\n\n### GEN01\n- LOAD PREVIOUS LATENT reste bypass.\n- MASTER CHAIN: `reset_chain = ON`.\n- Le clip est sauvegardé seul ET comme premier master.\n\n### GEN02+\n- Active LOAD PREVIOUS LATENT et choisis le latent précédent.\n- MASTER CHAIN: `reset_chain = OFF`.\n- Le nœud retrouve automatiquement le dernier master sauvegardé, retire l'overlap Native Guide puis ajoute le nouveau clip.\n\nTu obtiens à chaque run:\n- le clip courant de ~15 s,\n- le latent lossless pour le prochain run,\n- le master cumulé de l'épisode.\n\n\n## RUN MANAGER (3 switches)\nSIMPLE: Load Previous Latent OFF; Master Chain reset ON.\nCONTINUE: Load Previous Latent ON (select the previous saved AV latent); Master Chain reset OFF.\nUPSCALE LATENT: enables Segment Refine + Decode + separate UPSCALED export. Leave OFF for the baseline. Upscale may add a long second pass and needs an H3 3D latent-upscaler checkpoint. The AV latent for the next generation and cumulative master remain at the original size.\n"
+        "# H3 DIRECTOR 12GB — ULTIMATE V2 MASTER CHAIN\n\nArchitecture production pour **RTX 5070 12 Go + 48 Go RAM + i9-9900KF**.\n\n## Deux chaînes distinctes, dans le même workflow\n1. **Latent chain**: continuité H3 lossless d'une génération à la suivante.\n2. **Master chain**: construit automatiquement GEN01, puis GEN01+02, puis GEN01+02+03, etc.\n\n### Preset validé 12 Go\n- Qwen3-VL 4B FP8 + ClipProj\n- Hybride FL2VA/REF2VA INT8 b25-49, une seule copie branchée sur les deux rôles\n- Turbo REF2VA 8-step (combinaison avec hybride à vérifier par un rendu test)\n- 480×864, 24 fps\n- context_length **5**\n- ref_image_size **match**\n- Auto Ref Prune ON\n- Director Compile Only ON\n- Native PyTorch attention on CUDA 13 / cu130\n- Optional KJ/SageAttention node kept BYPASSED by default\n\n### GEN01\n- LOAD PREVIOUS LATENT reste bypass.\n- MASTER CHAIN: `reset_chain = ON`.\n- Le clip est sauvegardé seul ET comme premier master.\n\n### GEN02+\n- Active LOAD PREVIOUS LATENT et choisis le latent précédent.\n- MASTER CHAIN: `reset_chain = OFF`.\n- Le nœud retrouve automatiquement le dernier master sauvegardé, retire l'overlap Native Guide puis ajoute le nouveau clip.\n\nTu obtiens à chaque run:\n- le clip courant de ~15 s,\n- le latent lossless pour le prochain run,\n- le master cumulé de l'épisode.\n\n\n## RUN MANAGER (3 switches)\nSIMPLE: Load Previous Latent OFF; Master Chain reset ON.\nCONTINUE: Load Previous Latent ON (select the previous saved AV latent); Master Chain reset OFF.\nUPSCALE LATENT: enables Segment Refine + Decode + separate UPSCALED export. Leave OFF for the baseline. Upscale may add a long second pass and needs an H3 3D latent-upscaler checkpoint. The AV latent for the next generation and cumulative master remain at the original size.\n\n\nLe moteur SatoDive choisit FL2VA sans média de référence, REF2VA avec références. Le modèle hybride est branché aux deux rôles pour ne charger qu’un transformeur. Le bouton SIMPLE/CONTINUE gère le latent précédent et le master, il ne remplace pas la sélection du rôle selon le contenu.\n"
       ],
       "color": "#202020",
       "bgcolor": "#111111"
@@ -276,12 +276,12 @@
           ]
         }
       ],
-      "title": "5 • H3 Ref2VA FP8 scaled • Blackwell",
+      "title": "ONE CHECKPOINT • HYBRID FL2VA + REF2VA",
       "properties": {
         "Node name for S&R": "UNETLoader"
       },
       "widgets_values": [
-        "minimax_h3_ref2va_pruned_fp8_scaled.safetensors",
+        "minimax_h3_hybrid_fl2va_ref2va_b25-49-int8.safetensors",
         "default"
       ],
       "widgets_values_named": {
@@ -333,7 +333,8 @@
           "name": "MODEL",
           "type": "MODEL",
           "links": [
-            6
+            6,
+            33
           ]
         }
       ],
@@ -390,7 +391,7 @@
           "name": "fl2va_model",
           "shape": 7,
           "type": "MODEL",
-          "link": null
+          "link": 33
         },
         {
           "label": "REF2VA model",
@@ -2025,6 +2026,14 @@
       25,
       0,
       "VIDEO"
+    ],
+    [
+      33,
+      7,
+      0,
+      8,
+      3,
+      "MODEL"
     ]
   ]
 }
