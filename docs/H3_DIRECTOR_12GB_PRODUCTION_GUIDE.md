@@ -39,6 +39,26 @@ It uses `MiniMaxH3EasySegmentRefine_SatoDive` from the compatible
 `Kostt3d/Minimax-H3-Latent-Continuation-v2` fork. The baseline render does not
 require an upscaler checkpoint.
 
+## Three-switch Run Manager
+
+The bundled 12 GB workflow includes **MiniMax H3 12GB Run Manager**:
+
+| Switch | What the workflow does |
+| --- | --- |
+| `generation_simple` | Bypasses Load Previous Latent and resets the cumulative master. Use for GEN01. |
+| `generation_continue` | Enables Load Previous Latent and appends to the cumulative master. Select the preceding saved AV latent in the loader before GEN02+. |
+| `upscale_latent` | Enables the three-node 3D upscale, decode and separate export branch. It can accompany either generation mode. |
+
+Simple and Continue are mutually exclusive in the manager UI. Its switches
+control only the five marked nodes in this example workflow. The frontend
+updates their actual graph modes when a switch changes or when this workflow
+opens. If the manager does not respond after updating the custom node, restart
+ComfyUI and hard-refresh its frontend.
+
+The saved AV latent and cumulative master always come from the original render;
+the upscale switch only changes the optional export. Keep your episode canvas
+and frame rate consistent across generations.
+
 ## Optional 3D latent upscale export
 
 The production workflow has three bypassed nodes: `OPTIONAL • H3 3D LATENT
@@ -47,7 +67,7 @@ UPSCALED CLIP`. To use them:
 
 1. Install the compatible SatoDive continuation fork linked above and place an
    H3 3D latent upscaler checkpoint in `ComfyUI/models/latent_upscale_models`.
-2. Unbypass all three optional nodes. Select the checkpoint in Segment Refine.
+2. Turn on `upscale_latent` in Run Manager. Select the checkpoint in Segment Refine.
 3. Start with `latent_upscale_scale=1.3`, `refine_execution=tiled_low_vram`,
    `latent_upscale_device=cpu`, and `latent_upscale_precision=fp16` on 12 GB.
    This is a conservative starting configuration, not a measured speed claim.
