@@ -1,7 +1,7 @@
 {
   "id": "c64cb5fc-f369-4ed0-a135-9c9ff664c12b",
   "revision": 0,
-  "last_node_id": 25,
+  "last_node_id": 26,
   "last_link_id": 32,
   "nodes": [
     {
@@ -23,7 +23,7 @@
       "title": "H3 DIRECTOR 12GB • ARCHITECTURE",
       "properties": {},
       "widgets_values": [
-        "# H3 DIRECTOR 12GB — ULTIMATE V2 MASTER CHAIN\n\nArchitecture production pour **RTX 5070 12 Go + 48 Go RAM + i9-9900KF**.\n\n## Deux chaînes distinctes, dans le même workflow\n1. **Latent chain**: continuité H3 lossless d'une génération à la suivante.\n2. **Master chain**: construit automatiquement GEN01, puis GEN01+02, puis GEN01+02+03, etc.\n\n### Preset validé 12 Go\n- Qwen3-VL 4B FP8 + ClipProj\n- REF2VA FP8 scaled uniquement\n- Turbo REF2VA 8-step\n- 480×864, 24 fps\n- context_length **5**\n- ref_image_size **match**\n- Auto Ref Prune ON\n- Director Compile Only ON\n- Native PyTorch attention on CUDA 13 / cu130\n- Optional KJ/SageAttention node kept BYPASSED by default\n\n### GEN01\n- LOAD PREVIOUS LATENT reste bypass.\n- MASTER CHAIN: `reset_chain = ON`.\n- Le clip est sauvegardé seul ET comme premier master.\n\n### GEN02+\n- Active LOAD PREVIOUS LATENT et choisis le latent précédent.\n- MASTER CHAIN: `reset_chain = OFF`.\n- Le nœud retrouve automatiquement le dernier master sauvegardé, retire l'overlap Native Guide puis ajoute le nouveau clip.\n\nTu obtiens à chaque run:\n- le clip courant de ~15 s,\n- le latent lossless pour le prochain run,\n- le master cumulé de l'épisode.\n"
+        "# H3 DIRECTOR 12GB — ULTIMATE V2 MASTER CHAIN\n\nArchitecture production pour **RTX 5070 12 Go + 48 Go RAM + i9-9900KF**.\n\n## Deux chaînes distinctes, dans le même workflow\n1. **Latent chain**: continuité H3 lossless d'une génération à la suivante.\n2. **Master chain**: construit automatiquement GEN01, puis GEN01+02, puis GEN01+02+03, etc.\n\n### Preset validé 12 Go\n- Qwen3-VL 4B FP8 + ClipProj\n- REF2VA FP8 scaled uniquement\n- Turbo REF2VA 8-step\n- 480×864, 24 fps\n- context_length **5**\n- ref_image_size **match**\n- Auto Ref Prune ON\n- Director Compile Only ON\n- Native PyTorch attention on CUDA 13 / cu130\n- Optional KJ/SageAttention node kept BYPASSED by default\n\n### GEN01\n- LOAD PREVIOUS LATENT reste bypass.\n- MASTER CHAIN: `reset_chain = ON`.\n- Le clip est sauvegardé seul ET comme premier master.\n\n### GEN02+\n- Active LOAD PREVIOUS LATENT et choisis le latent précédent.\n- MASTER CHAIN: `reset_chain = OFF`.\n- Le nœud retrouve automatiquement le dernier master sauvegardé, retire l'overlap Native Guide puis ajoute le nouveau clip.\n\nTu obtiens à chaque run:\n- le clip courant de ~15 s,\n- le latent lossless pour le prochain run,\n- le master cumulé de l'épisode.\n\n\n## RUN MANAGER (3 switches)\nSIMPLE: Load Previous Latent OFF; Master Chain reset ON.\nCONTINUE: Load Previous Latent ON (select the previous saved AV latent); Master Chain reset OFF.\nUPSCALE LATENT: enables Segment Refine + Decode + separate UPSCALED export. Leave OFF for the baseline. Upscale may add a long second pass and needs an H3 3D latent-upscaler checkpoint. The AV latent for the next generation and cumulative master remain at the original size.\n"
       ],
       "color": "#202020",
       "bgcolor": "#111111"
@@ -703,7 +703,9 @@
       "title": "LOAD PREVIOUS LATENT • BYPASS ON CLIP 1",
       "properties": {
         "cnr_id": "minimax-h3-latent-continuation",
-        "Node name for S&R": "MiniMaxH3EasyLoadLatent_SatoDive"
+        "Node name for S&R": "MiniMaxH3EasyLoadLatent_SatoDive",
+        "h3_manager_owner": 26,
+        "h3_manager_role": "load_latent"
       },
       "widgets_values": [
         "(none saved yet)"
@@ -1443,7 +1445,9 @@
       "title": "MASTER CHAIN • GEN01 → EPISODE",
       "properties": {
         "Node name for S&R": "MiniMaxH3DirectorMasterChainCS",
-        "cnr_id": "minimaxh3-director"
+        "cnr_id": "minimaxh3-director",
+        "h3_manager_owner": 26,
+        "h3_manager_role": "master"
       },
       "widgets_values": [
         true,
@@ -1601,7 +1605,9 @@
       ],
       "title": "OPTIONAL • H3 3D LATENT UPSCALE + REFINE (bypassed)",
       "properties": {
-        "Node name for S&R": "MiniMaxH3EasySegmentRefine_SatoDive"
+        "Node name for S&R": "MiniMaxH3EasySegmentRefine_SatoDive",
+        "h3_manager_owner": 26,
+        "h3_manager_role": "refine"
       },
       "widgets_values": [
         "latent_upscale",
@@ -1655,7 +1661,9 @@
       ],
       "title": "OPTIONAL • DECODE UPSCALED CLIP",
       "properties": {
-        "Node name for S&R": "MiniMaxH3EasySegmentDecode_SatoDive"
+        "Node name for S&R": "MiniMaxH3EasySegmentDecode_SatoDive",
+        "h3_manager_owner": 26,
+        "h3_manager_role": "upscale_decode"
       },
       "widgets_values": []
     },
@@ -1684,7 +1692,9 @@
       "title": "OPTIONAL • SAVE UPSCALED CLIP",
       "properties": {
         "Node name for S&R": "SaveVideo",
-        "cnr_id": "comfy-core"
+        "cnr_id": "comfy-core",
+        "h3_manager_owner": 26,
+        "h3_manager_role": "upscale_save"
       },
       "widgets_values": [
         "video/H3_Director_12GB_UPSCALED",
@@ -1698,6 +1708,65 @@
         "format.codec": "auto",
         "codec": "auto"
       }
+    },
+    {
+      "id": 26,
+      "type": "MiniMaxH3RunManagerCS",
+      "pos": [
+        150,
+        -495
+      ],
+      "size": [
+        330,
+        164
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "generation_simple",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "generation_simple"
+          }
+        },
+        {
+          "name": "generation_continue",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "generation_continue"
+          }
+        },
+        {
+          "name": "upscale_latent",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "upscale_latent"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mode",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3RunManagerCS"
+      },
+      "widgets_values": [
+        true,
+        false,
+        false
+      ],
+      "title": "RUN MANAGER • SIMPLE / CONTINUE / UPSCALE",
+      "color": "#244734",
+      "bgcolor": "#345d48"
     }
   ],
   "links": [
