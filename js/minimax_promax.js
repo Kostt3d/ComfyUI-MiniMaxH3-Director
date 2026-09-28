@@ -2,7 +2,8 @@
 import { app } from '../../scripts/app.js';
 
 const FIELDS = ['global_prompt', 'summary', 'soundscape', 'music', 'shots_json',
-  ...[1, 2, 3].flatMap(i => [`ref${i}_description`, `ref${i}_retained`]),
+  ...Array.from({ length: 9 }, (_, idx) => idx + 1).flatMap(i => [`ref${i}_description`, `ref${i}_retained`]),
+  'reference_policy', 'auto_ref_limit', 'manual_refs',
   'video_description', 'video_retained', 'audio_description', 'audio_retained'];
 const widget = (node, name) => node.widgets?.find(w => w.name === name);
 const el = (tag, text, parent) => {
@@ -28,6 +29,30 @@ function field(parent, label, value, change, rows = 2) {
   input.rows = rows;
   input.style.cssText = 'display:block;box-sizing:border-box;width:100%;margin-top:4px;resize:vertical;background:#162237;color:#f1f5f9;border:1px solid #415775;border-radius:5px;padding:7px;font:12px sans-serif';
   input.addEventListener('input', () => change(input.value));
+  return input;
+}
+function selectField(parent, label, value, options, change) {
+  const wrap = el('label', undefined, parent);
+  wrap.style.cssText = 'display:block;margin:7px 0;color:#cbd5e1;font-size:12px';
+  el('span', label, wrap);
+  const input = el('select', undefined, wrap);
+  input.style.cssText = 'display:block;box-sizing:border-box;width:100%;margin-top:4px;background:#162237;color:#f1f5f9;border:1px solid #415775;border-radius:5px;padding:7px;font:12px sans-serif';
+  for (const option of options) {
+    const item = el('option', option, input);
+    item.value = option;
+  }
+  input.value = value;
+  input.addEventListener('change', () => change(input.value));
+  return input;
+}
+function numberField(parent, label, value, min, max, change) {
+  const wrap = el('label', undefined, parent);
+  wrap.style.cssText = 'display:block;margin:7px 0;color:#cbd5e1;font-size:12px';
+  el('span', label, wrap);
+  const input = el('input', undefined, wrap);
+  input.type = 'number'; input.min = String(min); input.max = String(max); input.step = '1'; input.value = value;
+  input.style.cssText = 'display:block;box-sizing:border-box;width:100%;margin-top:4px;background:#162237;color:#f1f5f9;border:1px solid #415775;border-radius:5px;padding:7px;font:12px sans-serif';
+  input.addEventListener('input', () => change(Number(input.value)));
   return input;
 }
 function button(parent, label, action) {
@@ -58,10 +83,19 @@ function editor(node) {
     const form = el('div', undefined, root);
     const bound = (name, label, rows) => field(form, label, widget(node, name)?.value || '', value => write(node, name, value), rows);
     if (tab === 'Références') {
-      el('p', 'Ref2V : branche les images consécutivement. Utilise <Picture 1>, <Picture 2>, <Video 1> ou <Audio 1> dans tes plans. Les champs « conserver » sont des instructions, pas des verrous.', form);
-      for (let i = 1; i <= 3; i++) {
-        bound(`ref${i}_description`, `<Picture ${i}> — identité / rôle`, 2);
-        bound(`ref${i}_retained`, 'Éléments à conserver', 1);
+      el('p', 'BANQUE 9 REFS · Auto (12GB) encode seulement les références utiles. Dans les prompts, utilise @ref1 … @ref9. Promax compacte automatiquement les refs actives vers <Picture 1…N> pour H3.', form);
+      selectField(form, 'Politique de références', widget(node, 'reference_policy')?.value || 'Auto (12GB)',
+        ['Auto (12GB)', 'Manual', 'Force all loaded'], value => write(node, 'reference_policy', value));
+      numberField(form, 'Limite Auto si aucun @refN explicite', widget(node, 'auto_ref_limit')?.value ?? 4, 1, 9,
+        value => write(node, 'auto_ref_limit', value));
+      bound('manual_refs', 'Manual · slots à encoder, ex. 1,4,7', 1);
+      for (let i = 1; i <= 9; i++) {
+        const card = el('div', undefined, form);
+        card.style.cssText = 'background:#132134;border:1px solid #31475f;border-radius:6px;padding:8px;margin:8px 0';
+        el('strong', `REF BANK ${i} · utiliser @ref${i} dans le scénario`, card);
+        const local = (name, label, rows) => field(card, label, widget(node, name)?.value || '', value => write(node, name, value), rows);
+        local(`ref${i}_description`, 'Identité / rôle', 2);
+        local(`ref${i}_retained`, 'Éléments à conserver', 1);
       }
       bound('video_description', '<Video 1> — rôle', 1);
       bound('video_retained', 'Vidéo — éléments à conserver', 1);
@@ -74,7 +108,7 @@ function editor(node) {
       const preview = field(form, 'Prompt réellement encodé — disponible après exécution', lastPrompt, () => {}, 12);
       preview.readOnly = true;
       bound('shots_json', 'Storyboard JSON — sauvegardé dans le workflow', 12);
-      el('p', 'FL2V : première et dernière image. Ref2V : références souples, pas des keyframes imposées. La reprise par dernière image ne constitue pas une continuation latente.', form);
+      el('p', 'Continuation : le latent précédent porte déjà la mémoire. Pour le nouveau Take, commence par une nouvelle vue caméra et une nouvelle action. La validation du Take se fait dans « Promax · COMMIT Take → Master ».', form);
       button(form, 'Recharger les plans depuis le JSON', () => { tab = 'Scénario'; draw(); });
       return;
     }
