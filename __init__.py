@@ -19,6 +19,7 @@ from .promax_continuation import (
     MiniMaxH3PromaxSaveLatent,
     MiniMaxH3PromaxLoadLatent,
 )
+from .promax_trim import MiniMaxH3PromaxTrimMedia
 
 # MiniMaxH3DirectorChain is deliberately NOT registered — see minimax_chain.py.
 # The backend works; there is no usable way to give it a timeline, so it is withdrawn
@@ -34,7 +35,8 @@ class MiniMaxH3DirectorExtension(ComfyExtension):
                 MiniMaxH3DirectorMasterChain, MiniMaxH3RunManager,
                 MiniMaxH3Promax, MiniMaxH3PromaxLastFrame,
                 MiniMaxH3PromaxContinue, MiniMaxH3PromaxAppend,
-                MiniMaxH3PromaxSaveLatent, MiniMaxH3PromaxLoadLatent]
+                MiniMaxH3PromaxSaveLatent, MiniMaxH3PromaxLoadLatent,
+                MiniMaxH3PromaxTrimMedia]
 
 
 async def comfy_entrypoint() -> MiniMaxH3DirectorExtension:
@@ -48,6 +50,7 @@ NODE_CLASS_MAPPINGS = {
     "MiniMaxH3PromaxAppend": MiniMaxH3PromaxAppend,
     "MiniMaxH3PromaxSaveLatent": MiniMaxH3PromaxSaveLatent,
     "MiniMaxH3PromaxLoadLatent": MiniMaxH3PromaxLoadLatent,
+    "MiniMaxH3PromaxTrimMedia": MiniMaxH3PromaxTrimMedia,
     "MiniMaxH3DirectorCS": MiniMaxH3Director,
     "MiniMaxH3PreviewOverrideCS": MiniMaxH3PreviewOverride,
     "MiniMaxH3RetakeStitchCS": MiniMaxH3RetakeStitch,
@@ -65,6 +68,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "MiniMaxH3PromaxAppend": "Promax · Append Continuation",
     "MiniMaxH3PromaxSaveLatent": "Promax · Save AV Latent",
     "MiniMaxH3PromaxLoadLatent": "Promax · Load AV Latent",
+    "MiniMaxH3PromaxTrimMedia": "Promax · Trim Continuation Media",
     "MiniMaxH3DirectorCS": "MiniMax H3 Director",
     "MiniMaxH3PreviewOverrideCS": "MiniMax H3 Preview Override",
     "MiniMaxH3RetakeStitchCS": "MiniMax H3 Retake Stitch",
