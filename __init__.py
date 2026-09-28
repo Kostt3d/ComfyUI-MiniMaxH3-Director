@@ -19,6 +19,7 @@ from .promax_continuation import (
     MiniMaxH3PromaxSaveLatent,
     MiniMaxH3PromaxLoadLatent,
 )
+from .promax_master import MiniMaxH3PromaxCommitMaster, MiniMaxH3PromaxLoadMaster
 from .promax_trim import MiniMaxH3PromaxTrimMedia
 
 # MiniMaxH3DirectorChain is deliberately NOT registered — see minimax_chain.py.
@@ -36,6 +37,7 @@ class MiniMaxH3DirectorExtension(ComfyExtension):
                 MiniMaxH3Promax, MiniMaxH3PromaxLastFrame,
                 MiniMaxH3PromaxContinue, MiniMaxH3PromaxAppend,
                 MiniMaxH3PromaxSaveLatent, MiniMaxH3PromaxLoadLatent,
+                MiniMaxH3PromaxCommitMaster, MiniMaxH3PromaxLoadMaster,
                 MiniMaxH3PromaxTrimMedia]
 
 
@@ -50,6 +52,8 @@ NODE_CLASS_MAPPINGS = {
     "MiniMaxH3PromaxAppend": MiniMaxH3PromaxAppend,
     "MiniMaxH3PromaxSaveLatent": MiniMaxH3PromaxSaveLatent,
     "MiniMaxH3PromaxLoadLatent": MiniMaxH3PromaxLoadLatent,
+    "MiniMaxH3PromaxCommitMaster": MiniMaxH3PromaxCommitMaster,
+    "MiniMaxH3PromaxLoadMaster": MiniMaxH3PromaxLoadMaster,
     "MiniMaxH3PromaxTrimMedia": MiniMaxH3PromaxTrimMedia,
     "MiniMaxH3DirectorCS": MiniMaxH3Director,
     "MiniMaxH3PreviewOverrideCS": MiniMaxH3PreviewOverride,
@@ -68,6 +72,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "MiniMaxH3PromaxAppend": "Promax · Append Continuation",
     "MiniMaxH3PromaxSaveLatent": "Promax · Save AV Latent",
     "MiniMaxH3PromaxLoadLatent": "Promax · Load AV Latent",
+    "MiniMaxH3PromaxCommitMaster": "Promax · COMMIT Take → Master",
+    "MiniMaxH3PromaxLoadMaster": "Promax · Load Master",
     "MiniMaxH3PromaxTrimMedia": "Promax · Trim Continuation Media",
     "MiniMaxH3DirectorCS": "MiniMax H3 Director",
     "MiniMaxH3PreviewOverrideCS": "MiniMax H3 Preview Override",
