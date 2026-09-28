@@ -1,12 +1,9 @@
 from comfy_api.latest import ComfyExtension, io
 from typing_extensions import override
 
-# Canonical ProMax core: the mature Director engine + UI stays the source of truth.
-# The performance wrapper delegates normal renders to the original Director and only
-# changes behaviour when compile_only continuation mode is enabled. This means ProMax
-# keeps the exact Director planner/encoding/timeline/media behaviour instead of maintaining
-# a second implementation that can drift.
-from .minimax_perf import MiniMaxH3DirectorOptimized as MiniMaxH3Director
+# Canonical ProMax core: exact mature Director backend + UI, with the optimized
+# compile-only/auto-prune continuation path layered on top.
+from .promax_core import MiniMaxH3PromaxDirectorCore as MiniMaxH3Director
 from .minimax_enhance import MiniMaxH3EnhancePrompt
 from .minimax_lastframe import MiniMaxH3SaveLastFrame
 from .minimax_preview import MiniMaxH3PreviewOverride
@@ -15,9 +12,10 @@ from .minimax_continuation import MiniMaxH3DirectorContinuation
 from .minimax_master import MiniMaxH3DirectorMasterChain
 from .minimax_run_manager import MiniMaxH3RunManager
 
-# v0.4 experimental Studio node kept temporarily for workflow compatibility only.
-# New workflows should use MiniMaxH3DirectorCS, displayed as MiniMax H3 ProMax.
-from .minimax_promax import MiniMaxH3Promax, MiniMaxH3PromaxLastFrame
+# Only the Last Frame helper is retained from the experimental parallel ProMax node.
+# The old MiniMaxH3Promax main node is deliberately not registered anymore, so there is
+# only one official ProMax Director and it always gets the mature Director timeline UI.
+from .minimax_promax import MiniMaxH3PromaxLastFrame
 from .promax_continuation import (
     MiniMaxH3PromaxContinue,
     MiniMaxH3PromaxAppend,
@@ -31,21 +29,29 @@ from .promax_master import (
 )
 from .promax_trim import MiniMaxH3PromaxTrimMedia
 
-# MiniMaxH3DirectorChain is deliberately NOT registered — see minimax_chain.py.
-
 
 class MiniMaxH3DirectorExtension(ComfyExtension):
     @override
     async def get_node_list(self) -> list[type[io.ComfyNode]]:
-        return [MiniMaxH3Director, MiniMaxH3PreviewOverride,
-                MiniMaxH3RetakeStitch, MiniMaxH3EnhancePrompt,
-                MiniMaxH3SaveLastFrame, MiniMaxH3DirectorContinuation,
-                MiniMaxH3DirectorMasterChain, MiniMaxH3RunManager,
-                MiniMaxH3Promax, MiniMaxH3PromaxLastFrame,
-                MiniMaxH3PromaxContinue, MiniMaxH3PromaxAppend,
-                MiniMaxH3PromaxSaveLatent, MiniMaxH3PromaxLoadLatent,
-                MiniMaxH3PromaxCommitMaster, MiniMaxH3PromaxLoadMaster,
-                MiniMaxH3PromaxPreviewTake, MiniMaxH3PromaxTrimMedia]
+        return [
+            MiniMaxH3Director,
+            MiniMaxH3PreviewOverride,
+            MiniMaxH3RetakeStitch,
+            MiniMaxH3EnhancePrompt,
+            MiniMaxH3SaveLastFrame,
+            MiniMaxH3DirectorContinuation,
+            MiniMaxH3DirectorMasterChain,
+            MiniMaxH3RunManager,
+            MiniMaxH3PromaxLastFrame,
+            MiniMaxH3PromaxContinue,
+            MiniMaxH3PromaxAppend,
+            MiniMaxH3PromaxSaveLatent,
+            MiniMaxH3PromaxLoadLatent,
+            MiniMaxH3PromaxCommitMaster,
+            MiniMaxH3PromaxLoadMaster,
+            MiniMaxH3PromaxPreviewTake,
+            MiniMaxH3PromaxTrimMedia,
+        ]
 
 
 async def comfy_entrypoint() -> MiniMaxH3DirectorExtension:
@@ -53,16 +59,12 @@ async def comfy_entrypoint() -> MiniMaxH3DirectorExtension:
 
 
 NODE_CLASS_MAPPINGS = {
-    # Canonical ProMax main node. It deliberately keeps the Director public id so the
-    # mature 600k timeline UI and every existing Director workflow load unchanged.
+    # Official ProMax main node. Public id intentionally stays MiniMaxH3DirectorCS so the
+    # mature Director JavaScript timeline attaches without any duplicated UI implementation.
     "MiniMaxH3DirectorCS": MiniMaxH3Director,
 
-    # Legacy experimental ProMax v0.4 node, temporary migration compatibility.
-    "MiniMaxH3Promax": MiniMaxH3Promax,
+    # ProMax continuation / Take-Commit extensions.
     "MiniMaxH3PromaxLastFrame": MiniMaxH3PromaxLastFrame,
-
-    # ProMax continuation / Take-Commit extensions. These plug directly into the
-    # canonical Director-core outputs.
     "MiniMaxH3PromaxContinue": MiniMaxH3PromaxContinue,
     "MiniMaxH3PromaxAppend": MiniMaxH3PromaxAppend,
     "MiniMaxH3PromaxSaveLatent": MiniMaxH3PromaxSaveLatent,
@@ -83,13 +85,8 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    # This is now the official ProMax node: mature Director UI + exact Director encoding.
     "MiniMaxH3DirectorCS": "MiniMax H3 ProMax · Director Core",
-
-    # Clearly mark the parallel v0.4 experiment so it is not used for new work.
-    "MiniMaxH3Promax": "MiniMax H3 ProMax v0.4 · LEGACY",
     "MiniMaxH3PromaxLastFrame": "Promax · Last Frame",
-
     "MiniMaxH3PromaxContinue": "Promax · Latent Continuation",
     "MiniMaxH3PromaxAppend": "Promax · Append Continuation",
     "MiniMaxH3PromaxSaveLatent": "Promax · Save AV Latent",
@@ -98,7 +95,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "MiniMaxH3PromaxLoadMaster": "Promax · Load Master",
     "MiniMaxH3PromaxPreviewTake": "Promax · Preview CURRENT TAKE",
     "MiniMaxH3PromaxTrimMedia": "Promax · Trim Continuation Media",
-
     "MiniMaxH3PreviewOverrideCS": "MiniMax H3 Preview Override",
     "MiniMaxH3RetakeStitchCS": "MiniMax H3 Retake Stitch",
     "MiniMaxH3EnhancePromptCS": "MiniMax H3 Enhance Prompt",
