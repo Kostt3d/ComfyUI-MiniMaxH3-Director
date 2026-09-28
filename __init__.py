@@ -12,6 +12,7 @@ from .minimax_retake import MiniMaxH3RetakeStitch
 from .minimax_continuation import MiniMaxH3DirectorContinuation
 from .minimax_master import MiniMaxH3DirectorMasterChain
 from .minimax_run_manager import MiniMaxH3RunManager
+from .minimax_promax import MiniMaxH3Promax, MiniMaxH3PromaxLastFrame
 
 # MiniMaxH3DirectorChain is deliberately NOT registered — see minimax_chain.py.
 # The backend works; there is no usable way to give it a timeline, so it is withdrawn
@@ -24,7 +25,8 @@ class MiniMaxH3DirectorExtension(ComfyExtension):
         return [MiniMaxH3Director, MiniMaxH3PreviewOverride,
                 MiniMaxH3RetakeStitch, MiniMaxH3EnhancePrompt,
                 MiniMaxH3SaveLastFrame, MiniMaxH3DirectorContinuation,
-                MiniMaxH3DirectorMasterChain, MiniMaxH3RunManager]
+                MiniMaxH3DirectorMasterChain, MiniMaxH3RunManager,
+                MiniMaxH3Promax, MiniMaxH3PromaxLastFrame]
 
 
 async def comfy_entrypoint() -> MiniMaxH3DirectorExtension:
@@ -32,6 +34,8 @@ async def comfy_entrypoint() -> MiniMaxH3DirectorExtension:
 
 
 NODE_CLASS_MAPPINGS = {
+    "MiniMaxH3Promax": MiniMaxH3Promax,
+    "MiniMaxH3PromaxLastFrame": MiniMaxH3PromaxLastFrame,
     "MiniMaxH3DirectorCS": MiniMaxH3Director,
     "MiniMaxH3PreviewOverrideCS": MiniMaxH3PreviewOverride,
     "MiniMaxH3RetakeStitchCS": MiniMaxH3RetakeStitch,
@@ -43,6 +47,8 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "MiniMaxH3Promax": "MiniMax H3 Promax · Director",
+    "MiniMaxH3PromaxLastFrame": "Promax · Last Frame",
     "MiniMaxH3DirectorCS": "MiniMax H3 Director",
     "MiniMaxH3PreviewOverrideCS": "MiniMax H3 Preview Override",
     "MiniMaxH3RetakeStitchCS": "MiniMax H3 Retake Stitch",

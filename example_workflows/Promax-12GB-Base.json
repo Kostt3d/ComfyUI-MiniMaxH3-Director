@@ -1,0 +1,1011 @@
+{
+  "last_node_id": 30,
+  "last_link_id": 23,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "title": "FL2VA · selected lazily",
+      "pos": [
+        0,
+        40
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "minimax_h3_fl2va_pruned_fp8_scaled.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "UNETLoader",
+      "title": "REF2VA · selected lazily",
+      "pos": [
+        0,
+        300
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "minimax_h3_ref2va_pruned_fp8_scaled.safetensors",
+        "default"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "CLIPLoader",
+      "title": "Qwen H3 text encoder",
+      "pos": [
+        0,
+        580
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            3
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+        "minimax",
+        "default"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "VAELoader",
+      "title": "Video VAE",
+      "pos": [
+        0,
+        850
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            4,
+            15
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_video_vae_fp8mix.safetensors"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "VAELoader",
+      "title": "Audio VAE",
+      "pos": [
+        0,
+        1090
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            5,
+            17
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "minimax_h3_audio_vae_fp32.safetensors"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "MiniMaxH3Promax",
+      "title": "MiniMax H3 Promax · Director",
+      "pos": [
+        750,
+        40
+      ],
+      "size": [
+        680,
+        1080
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model_fl2va",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "model_ref2va",
+          "type": "MODEL",
+          "link": 2
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 4
+        },
+        {
+          "name": "first_frame",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "last_frame",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "reference_1",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "reference_2",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "reference_3",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "reference_video",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "reference_audio",
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            6,
+            7
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            8
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            13
+          ],
+          "slot_index": 2
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "links": [
+            19
+          ],
+          "slot_index": 3
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [],
+          "slot_index": 4
+        },
+        {
+          "name": "report",
+          "type": "STRING",
+          "links": [],
+          "slot_index": 5
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3Promax"
+      },
+      "widgets_values": [
+        "T2V",
+        "Balanced portrait 480x864",
+        "Photorealistic harbour at dawn. A fisherman aboard a small wooden boat. Natural light and plausible physical motion.",
+        "",
+        "Water, creaking wood, distant seabirds. No dialogue.",
+        "",
+        "[{\"seconds\": 2, \"camera\": \"Wide static shot from the quayside.\", \"action\": \"A small fishing boat rocks gently in a quiet harbour. A large shadow moves beneath it.\", \"audio\": \"Water laps against the hull.\"}, {\"seconds\": 3, \"camera\": \"Low angle close shot of the water beside the boat.\", \"action\": \"A circular ripple spreads outward. The fisherman leans over the rail to look.\", \"audio\": \"A deep underwater rumble grows louder.\"}]",
+        12.0,
+        3.0,
+        "",
+        "appearance and identity",
+        "",
+        "appearance and identity",
+        "",
+        "appearance and identity",
+        "Scene and motion reference.",
+        "environment and visual style",
+        "Sound reference.",
+        "timbre and acoustic character"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "RandomNoise",
+      "title": "Seed",
+      "pos": [
+        1550,
+        40
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            9
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        42,
+        "fixed"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "KSamplerSelect",
+      "title": "Sampler",
+      "pos": [
+        1550,
+        270
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            11
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "res_multistep"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "BasicScheduler",
+      "title": "Schedule",
+      "pos": [
+        1550,
+        490
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            12
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicScheduler"
+      },
+      "widgets_values": [
+        "simple",
+        20,
+        1.0
+      ]
+    },
+    {
+      "id": 10,
+      "type": "BasicGuider",
+      "title": "Guidance",
+      "pos": [
+        1550,
+        760
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 7
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            10
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "SamplerCustomAdvanced",
+      "title": "Joint video + audio sampling",
+      "pos": [
+        1950,
+        40
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 9
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 10
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 11
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 12
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            14,
+            16
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": [],
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 12,
+      "type": "VAEDecodeTiled",
+      "title": "Tiled video decode",
+      "pos": [
+        2340,
+        40
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 14
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 15
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            18,
+            22
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeTiled"
+      },
+      "widgets_values": [
+        256,
+        64,
+        32,
+        8
+      ]
+    },
+    {
+      "id": 13,
+      "type": "VAEDecodeAudio",
+      "title": "Native stereo audio decode",
+      "pos": [
+        2340,
+        340
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 16
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            20
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecodeAudio"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 14,
+      "type": "CreateVideo",
+      "title": "24 fps · sRGB",
+      "pos": [
+        2750,
+        40
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 18
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "link": 19
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            21
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo"
+      },
+      "widgets_values": [
+        24,
+        8,
+        "sRGB",
+        "none"
+      ]
+    },
+    {
+      "id": 15,
+      "type": "SaveVideo",
+      "title": "Export Promax MP4",
+      "pos": [
+        3150,
+        40
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "video/Promax",
+        "auto",
+        "auto",
+        "auto"
+      ]
+    },
+    {
+      "id": 16,
+      "type": "MiniMaxH3PromaxLastFrame",
+      "title": "Last frame for next FL2V clip",
+      "pos": [
+        2750,
+        480
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 22
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            23
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MiniMaxH3PromaxLastFrame"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 17,
+      "type": "SaveImage",
+      "title": "Save last frame",
+      "pos": [
+        3150,
+        480
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 23
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "Promax/last_frame"
+      ]
+    },
+    {
+      "id": 30,
+      "type": "MarkdownNote",
+      "title": "À lire avant le premier rendu",
+      "pos": [
+        750,
+        1180
+      ],
+      "size": [
+        680,
+        340
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "PROMAX 0.1 — cible 12 Go VRAM / 48 Go RAM, non benchmarké sur GPU.\n1. Sélectionner les fichiers réellement installés dans chaque chargeur.\n2. T2V : FL2VA. FL2V : brancher Load Image sur first_frame. Ref2V : REF2VA, brancher reference_1 et renseigner sa description.\n3. Régler les plans dans Promax. Départ : 5 s, 480×864. 576×1024 donne un 9:16 exact.\n4. Vidéo + audio natif exportés. Dernière image sauvée pour le clip suivant.\n5. La reprise par image n’est pas une continuation latente. Pas de SageAttention requis.\nBase H3 32B : charge importante en RAM. ComfyUI gère le déchargement GPU. Cette variante ne garantit pas de tenir dans 48 Go RAM."
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      6,
+      0,
+      "MODEL"
+    ],
+    [
+      2,
+      2,
+      0,
+      6,
+      1,
+      "MODEL"
+    ],
+    [
+      3,
+      3,
+      0,
+      6,
+      2,
+      "CLIP"
+    ],
+    [
+      4,
+      4,
+      0,
+      6,
+      3,
+      "VAE"
+    ],
+    [
+      5,
+      5,
+      0,
+      6,
+      11,
+      "VAE"
+    ],
+    [
+      6,
+      6,
+      0,
+      9,
+      0,
+      "MODEL"
+    ],
+    [
+      7,
+      6,
+      0,
+      10,
+      0,
+      "MODEL"
+    ],
+    [
+      8,
+      6,
+      1,
+      10,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      9,
+      7,
+      0,
+      11,
+      0,
+      "NOISE"
+    ],
+    [
+      10,
+      10,
+      0,
+      11,
+      1,
+      "GUIDER"
+    ],
+    [
+      11,
+      8,
+      0,
+      11,
+      2,
+      "SAMPLER"
+    ],
+    [
+      12,
+      9,
+      0,
+      11,
+      3,
+      "SIGMAS"
+    ],
+    [
+      13,
+      6,
+      2,
+      11,
+      4,
+      "LATENT"
+    ],
+    [
+      14,
+      11,
+      0,
+      12,
+      0,
+      "LATENT"
+    ],
+    [
+      15,
+      4,
+      0,
+      12,
+      1,
+      "VAE"
+    ],
+    [
+      16,
+      11,
+      0,
+      13,
+      0,
+      "LATENT"
+    ],
+    [
+      17,
+      5,
+      0,
+      13,
+      1,
+      "VAE"
+    ],
+    [
+      18,
+      12,
+      0,
+      14,
+      0,
+      "IMAGE"
+    ],
+    [
+      19,
+      6,
+      3,
+      14,
+      1,
+      "FLOAT"
+    ],
+    [
+      20,
+      13,
+      0,
+      14,
+      2,
+      "AUDIO"
+    ],
+    [
+      21,
+      14,
+      0,
+      15,
+      0,
+      "VIDEO"
+    ],
+    [
+      22,
+      12,
+      0,
+      16,
+      0,
+      "IMAGE"
+    ],
+    [
+      23,
+      16,
+      0,
+      17,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5,
+      "offset": [
+        40,
+        40
+      ]
+    }
+  },
+  "version": 0.4
+}
