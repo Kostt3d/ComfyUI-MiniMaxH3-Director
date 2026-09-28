@@ -118,6 +118,11 @@ latent and cumulative master at their baseline resolution. See the
 [production guide](docs/H3_DIRECTOR_12GB_PRODUCTION_GUIDE.md#optional-3d-latent-upscale-export)
 before enabling the three optional nodes.
 
+The same workflow now has a **12GB Run Manager** with three switches: Simple,
+Continue and Latent Upscale. Simple and Continue are exclusive; Latent Upscale
+is independent. The manager synchronizes the marked latent loader, master
+reset, refine, upscale decode and upscale export nodes in this workflow.
+
 An optional **Realism People** LoRA has also been tested conservatively at strength `0.2`; when used, include the trigger `r34l1sm` in the prompt.
 
 ## Fixed reference library and auto-prune
