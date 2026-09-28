@@ -34,6 +34,39 @@ The tested production baseline is:
 - low-VRAM cleanup enabled
 - profiling enabled while tuning
 
+The example workflow also contains an **optional, bypassed H3 latent upscale branch**.
+It uses `MiniMaxH3EasySegmentRefine_SatoDive` from the compatible
+`Kostt3d/Minimax-H3-Latent-Continuation-v2` fork. The baseline render does not
+require an upscaler checkpoint.
+
+## Optional 3D latent upscale export
+
+The production workflow has three bypassed nodes: `OPTIONAL • H3 3D LATENT
+UPSCALE + REFINE`, `OPTIONAL • DECODE UPSCALED CLIP`, and `OPTIONAL • SAVE
+UPSCALED CLIP`. To use them:
+
+1. Install the compatible SatoDive continuation fork linked above and place an
+   H3 3D latent upscaler checkpoint in `ComfyUI/models/latent_upscale_models`.
+2. Unbypass all three optional nodes. Select the checkpoint in Segment Refine.
+3. Start with `latent_upscale_scale=1.3`, `refine_execution=tiled_low_vram`,
+   `latent_upscale_device=cpu`, and `latent_upscale_precision=fp16` on 12 GB.
+   This is a conservative starting configuration, not a measured speed claim.
+4. Inspect the separate `UPSCALED` output and compare it against the baseline
+   clip. Raise scale only after measuring VRAM and render time on your machine.
+
+This is a **second H3 sampling pass**, so it normally increases generation time.
+The original Segment Render feeds Save Latent and the cumulative master. The
+optional branch feeds only its separate export: never pass its changed-size
+latent into the next generation while the Director canvas remains at 480×864.
+This keeps the AV continuation and master stitching on a consistent canvas.
+
+FaceDetailer from Impact Pack expects an image diffusion model and detector;
+the H3 transformer is not a drop-in face model for that node. Processing video
+frames independently can introduce face flicker. For a specific face problem,
+run a separate, temporally checked post-production pass with a compatible face
+model after exporting the clip; do not insert FaceDetailer into the H3 AV latent
+chain.
+
 On the validated CUDA 13.0 / PyTorch cu130 setup, **native PyTorch attention is the recommended default**. A local SageAttention/KJ installation may be used only if it imports and runs correctly in that environment. Do not treat SageAttention as required for the 12 GB path.
 
 ## Fixed reference library and auto-prune
