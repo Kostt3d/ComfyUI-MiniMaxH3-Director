@@ -11,6 +11,7 @@ from .minimax_preview import MiniMaxH3PreviewOverride
 from .minimax_retake import MiniMaxH3RetakeStitch
 from .minimax_continuation import MiniMaxH3DirectorContinuation
 from .minimax_master import MiniMaxH3DirectorMasterChain
+from .minimax_run_manager import MiniMaxH3RunManager
 
 # MiniMaxH3DirectorChain is deliberately NOT registered — see minimax_chain.py.
 # The backend works; there is no usable way to give it a timeline, so it is withdrawn
@@ -23,7 +24,7 @@ class MiniMaxH3DirectorExtension(ComfyExtension):
         return [MiniMaxH3Director, MiniMaxH3PreviewOverride,
                 MiniMaxH3RetakeStitch, MiniMaxH3EnhancePrompt,
                 MiniMaxH3SaveLastFrame, MiniMaxH3DirectorContinuation,
-                MiniMaxH3DirectorMasterChain]
+                MiniMaxH3DirectorMasterChain, MiniMaxH3RunManager]
 
 
 async def comfy_entrypoint() -> MiniMaxH3DirectorExtension:
@@ -38,6 +39,7 @@ NODE_CLASS_MAPPINGS = {
     "MiniMaxH3SaveLastFrameCS": MiniMaxH3SaveLastFrame,
     "MiniMaxH3DirectorContinuationCS": MiniMaxH3DirectorContinuation,
     "MiniMaxH3DirectorMasterChainCS": MiniMaxH3DirectorMasterChain,
+    "MiniMaxH3RunManagerCS": MiniMaxH3RunManager,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -48,6 +50,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "MiniMaxH3SaveLastFrameCS": "MiniMax H3 Save Last Frame",
     "MiniMaxH3DirectorContinuationCS": "MiniMax H3 Director 12GB Engine",
     "MiniMaxH3DirectorMasterChainCS": "MiniMax H3 Director 12GB Master Chain",
+    "MiniMaxH3RunManagerCS": "MiniMax H3 12GB Run Manager",
 }
 
 WEB_DIRECTORY = "./js"
