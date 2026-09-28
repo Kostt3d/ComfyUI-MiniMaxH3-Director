@@ -182,7 +182,7 @@ class MiniMaxH3PromaxPreviewTake(io.ComfyNode):
         full_path = os.path.join(folder, file_name)
         video.save_to(
             full_path,
-            format=Types.VideoContainer("mp4"),
+            format=Types.VideoContainer.MP4,
             codec="auto",
             preset="ultrafast",
         )
