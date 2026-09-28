@@ -123,6 +123,12 @@ Continue and Latent Upscale. Simple and Continue are exclusive; Latent Upscale
 is independent. The manager synchronizes the marked latent loader, master
 reset, refine, upscale decode and upscale export nodes in this workflow.
 
+The 2-in-1 graph now wires one experimental **FL2VA/Ref2VA hybrid checkpoint**
+to both model roles of SatoDive Model Adapter. It avoids loading two H3
+transformers together on the 12 GB path. The hybrid with the existing Ref2VA
+Turbo LoRA has not been validated on the target RTX 5070; compare a simple
+scene and a reference-conditioned scene before using it for production.
+
 An optional **Realism People** LoRA has also been tested conservatively at strength `0.2`; when used, include the trigger `r34l1sm` in the prompt.
 
 ## Fixed reference library and auto-prune
