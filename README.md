@@ -110,6 +110,14 @@ Qwen3-VL 4B FP8
 
 On the validated CUDA 13.0 / PyTorch cu130 setup, **native PyTorch attention is the recommended default**. The optional KJ/SageAttention node is kept in the example workflow but is bypassed by default. Enable it only if your local SageAttention build imports and runs correctly.
 
+The 2-in-1 production workflow has a separate, bypassed H3 3D latent upscale
+and segment-refine export path. It requires the compatible
+[`Kostt3d/Minimax-H3-Latent-Continuation-v2`](https://github.com/Kostt3d/Minimax-H3-Latent-Continuation-v2)
+fork and an H3 latent upscaler checkpoint. It leaves the original saved AV
+latent and cumulative master at their baseline resolution. See the
+[production guide](docs/H3_DIRECTOR_12GB_PRODUCTION_GUIDE.md#optional-3d-latent-upscale-export)
+before enabling the three optional nodes.
+
 An optional **Realism People** LoRA has also been tested conservatively at strength `0.2`; when used, include the trigger `r34l1sm` in the prompt.
 
 ## Fixed reference library and auto-prune
@@ -178,7 +186,7 @@ Clone this repository into `ComfyUI/custom_nodes` and install SatoDive's MiniMax
 ```powershell
 cd ComfyUI/custom_nodes
 git clone https://github.com/Kostt3d/ComfyUI-MiniMaxH3-Director.git
-git clone https://github.com/SatoDive/Minimax-H3-Latent-Continuation.git
+git clone https://github.com/Kostt3d/Minimax-H3-Latent-Continuation-v2.git
 ```
 
 Restart ComfyUI and hard-refresh the frontend if the Director UI looks stale.
