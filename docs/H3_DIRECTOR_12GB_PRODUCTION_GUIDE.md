@@ -34,6 +34,25 @@ The tested production baseline is:
 - low-VRAM cleanup enabled
 - profiling enabled while tuning
 
+**Model-role update:** the bundled 2-in-1 graph now selects
+`minimax_h3_hybrid_fl2va_ref2va_b25-49-int8.safetensors` in its one diffusion
+loader, and sends that same MODEL output to both `fl2va_model` and
+`ref2va_model` on SatoDive Model Adapter. This is an experimental alternative
+to the tested Ref2VA FP8 baseline above. It enables an FL2VA model role for
+simple text/first-last-frame scenes while retaining Ref2VA reference support
+without loading two separate transformers. SatoDive selects the model role
+from scene media; the Run Manager selects whether to use a previous latent and
+append a master. These are distinct choices.
+
+The existing Ref2VA Turbo 8-step LoRA is still connected to the hybrid.
+**That particular pairing is unverified**: first test a short simple clip and
+a short reference-conditioned clip, checking quality, reference adherence,
+audio, time and memory before using it for an episode. Choose the actual
+checkpoint and LoRA filenames present on your system. If the hybrid/LoRA
+pairing fails or loses quality, restore the validated Ref2VA FP8 setup for
+continuation and test a separate FL2VA checkpoint plus matching FL2VA Turbo
+LoRA in a separate workflow, avoiding simultaneous loading on 12 GB.
+
 The example workflow also contains an **optional, bypassed H3 latent upscale branch**.
 It uses `MiniMaxH3EasySegmentRefine_SatoDive` from the compatible
 `Kostt3d/Minimax-H3-Latent-Continuation-v2` fork. The baseline render does not
