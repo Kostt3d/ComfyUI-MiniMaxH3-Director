@@ -1,8 +1,8 @@
 {
   "id": "c64cb5fc-f369-4ed0-a135-9c9ff664c12b",
   "revision": 0,
-  "last_node_id": 22,
-  "last_link_id": 25,
+  "last_node_id": 25,
+  "last_link_id": 32,
   "nodes": [
     {
       "id": 1,
@@ -552,7 +552,7 @@
           "name": "combined_audio",
           "type": "AUDIO",
           "links": null
-         },
+        },
         {
           "name": "fps",
           "type": "FLOAT",
@@ -588,7 +588,7 @@
           "name": "retake_info",
           "type": "STRING",
           "links": null
-         },
+        },
         {
           "name": "scene",
           "type": "MINIMAX_H3_DIRECTOR_SCENE",
@@ -604,959 +604,1358 @@
       },
       "widgets_values": [
         0,
-       15.0,
         15.0,
-      0,
-       360,
-      360,
+        15.0,
+        0,
+        360,
+        360,
         "{\"mainTrackEnabled\":true,\"audioTrackEnabled\":true,\"motionTrackEnabled\":true,\"propHeight\":186,\"globalPropHeight\":126,\"showFilenames\":true,\"showPromptZones\":true,\"overrideAudio\":false,\"inpaint_audio\":true,\"global_prompt\":\"\",\"retake_global_prompt\":\"\",\"overall_soundscape\":\"\",\"non_diegetic_music\":\"\",\"prompt_override\":\"\",\"prompt_override_on\":false,\"retakeMode\":false,\"retakeStart\":0,\"retakeLength\":360,\"retakePrompt\":\"\",\"retakeStrength\":1,\"normalStartFrame\":0,\"normalDurationFrames\":360,\"reference_mode\":\"REF2VA\",\"prompt_format\":\"minimax\",\"analyzeProvider\":\"ollama\",\"analyzeBaseUrl\":\"\",\"analyzeModel\":\"\",\"summary\":\"\",\"task_type_override\":\"\",\"subjectSlotCount\":9,\"subjects\":[{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"environment\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"}],\"segments\":[],\"motionSegments\":[],\"audioSegments\":[]}",
         "",
-      "",
-      "",
-      false,
-      true,
-      true,
-      24,
-      "seconds",
-      480,
-      864,
-      "crop",
-      32,
-      0,
-      false,
-      "match",
-      6,
-      3,
-      "",
-      "",
-      "",
-      true,
-      true
-    ],
-    "widgets_values_named": {
-      "start_second": 0,
-      "end_second": 15.0,
-      "duration_seconds": 15.0,
-      "start_frame": 0,
-      "end_frame": 360,
-      "duration_frames": 360,
-      "timeline_data": "{\"mainTrackEnabled\":true,\"audioTrackEnabled\":true,\"motionTrackEnabled\":true,\"propHeight\":186,\"globalPropHeight\":126,\"showFilenames\":true,\"showPromptZones\":true,\"overrideAudio\":false,\"inpaint_audio\":true,\"global_prompt\":\"\",\"retake_global_prompt\":\"\",\"overall_soundscape\":\"\",\"non_diegetic_music\":\"\",\"prompt_override\":\"\",\"prompt_override_on\":false,\"retakeMode\":false,\"retakeStart\":0,\"retakeLength\":360,\"retakePrompt\":\"\",\"retakeStrength\":1,\"normalStartFrame\":0,\"normalDurationFrames\":360,\"reference_mode\":\"REF2VA\",\"prompt_format\":\"minimax\",\"analyzeProvider\":\"ollama\",\"analyzeBaseUrl\":\"\",\"analyzeModel\":\"\",\"summary\":\"\",\"task_type_override\":\"\",\"subjectSlotCount\":9,\"subjects\":[{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"environment\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"}],\"segments\":[],\"motionSegments\":[],\"audioSegments\":[]}",
-      "local_prompts": "",
-      "segment_lengths": "",
-      "guide_strength": "",
-      "use_custom_audio": false,
-      "use_custom_motion": true,
-      "inpaint_audio": true,
-      "frame_rate": 24,
-      "display_mode": "seconds",
-      "custom_width": 480,
-      "custom_height": 864,
-      "resize_method": "crop",
-      "divisible_by": 32,
-      "img_compression": 0,
-      "override_audio": false,
-      "ref_image_size": "match",
-      "shift_video": 6,
-      "shift_audio": 3,
-      "ref_image_notes": "",
-      "minimax_settings_ui": "",
-      "timeline_ui": "",
-      "compile_only": true,
-      "auto_prune_refs": true
+        "",
+        "",
+        false,
+        true,
+        true,
+        24,
+        "seconds",
+        480,
+        864,
+        "crop",
+        32,
+        0,
+        false,
+        "match",
+        6,
+        3,
+        "",
+        "",
+        "",
+        true,
+        true
+      ],
+      "widgets_values_named": {
+        "start_second": 0,
+        "end_second": 15.0,
+        "duration_seconds": 15.0,
+        "start_frame": 0,
+        "end_frame": 360,
+        "duration_frames": 360,
+        "timeline_data": "{\"mainTrackEnabled\":true,\"audioTrackEnabled\":true,\"motionTrackEnabled\":true,\"propHeight\":186,\"globalPropHeight\":126,\"showFilenames\":true,\"showPromptZones\":true,\"overrideAudio\":false,\"inpaint_audio\":true,\"global_prompt\":\"\",\"retake_global_prompt\":\"\",\"overall_soundscape\":\"\",\"non_diegetic_music\":\"\",\"prompt_override\":\"\",\"prompt_override_on\":false,\"retakeMode\":false,\"retakeStart\":0,\"retakeLength\":360,\"retakePrompt\":\"\",\"retakeStrength\":1,\"normalStartFrame\":0,\"normalDurationFrames\":360,\"reference_mode\":\"REF2VA\",\"prompt_format\":\"minimax\",\"analyzeProvider\":\"ollama\",\"analyzeBaseUrl\":\"\",\"analyzeModel\":\"\",\"summary\":\"\",\"task_type_override\":\"\",\"subjectSlotCount\":9,\"subjects\":[{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"person\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"},{\"images\":[],\"description\":\"\",\"shortName\":\"\",\"kind\":\"environment\",\"retention\":\"fully_preserved\",\"retentionNote\":\"\"}],\"segments\":[],\"motionSegments\":[],\"audioSegments\":[]}",
+        "local_prompts": "",
+        "segment_lengths": "",
+        "guide_strength": "",
+        "use_custom_audio": false,
+        "use_custom_motion": true,
+        "inpaint_audio": true,
+        "frame_rate": 24,
+        "display_mode": "seconds",
+        "custom_width": 480,
+        "custom_height": 864,
+        "resize_method": "crop",
+        "divisible_by": 32,
+        "img_compression": 0,
+        "override_audio": false,
+        "ref_image_size": "match",
+        "shift_video": 6,
+        "shift_audio": 3,
+        "ref_image_notes": "",
+        "minimax_settings_ui": "",
+        "timeline_ui": "",
+        "compile_only": true,
+        "auto_prune_refs": true
+      },
+      "color": "#203520",
+      "bgcolor": "#304d30"
     },
-   "color": "#203520",
-    "bgcolor": "#304d30"
-  },
-  {
-    "id": 10,
-    "type": "MiniMaxH3EasyLoadLatent_SatoDive",
-    "pos": [
-      180,
-      -80
-    ],
-    "size": [
-      400,
-      100
-    ],
-    "flags": {},
-    "order": 9,
-    "mode": 4,
-    "inputs": [
-      {
-        "name": "latent_file",
-        "type": "COMBO",
-        "widget": {
-          "name": "latent_file"
-        },
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "latent",
-        "type": "LATENT",
-        "links": [
-          11
-        ]
-      }
-    ],
-    "title": "LOAD PREVIOUS LATENT ‚Ä¢ BYPASS ON CLIP 1",
-    "properties": {
-      "cnr_id": "minimax-h3-latent-continuation",
-      "Node name for S&R": "MiniMaxH3EasyLoadLatent_SatoDive"
+    {
+      "id": 10,
+      "type": "MiniMaxH3EasyLoadLatent_SatoDive",
+      "pos": [
+        180,
+        -80
+      ],
+      "size": [
+        400,
+        100
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "latent_file",
+          "type": "COMBO",
+          "widget": {
+            "name": "latent_file"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "title": "LOAD PREVIOUS LATENT ‚Ä¢ BYPASS ON CLIP 1",
+      "properties": {
+        "cnr_id": "minimax-h3-latent-continuation",
+        "Node name for S&R": "MiniMaxH3EasyLoadLatent_SatoDive"
+      },
+      "widgets_values": [
+        "(none saved yet)"
+      ],
+      "color": "#403020",
+      "bgcolor": "#654a2f"
     },
-    "widgets_values": [
-      "(none saved yet)"
-    ],
-    "color": "#403020",
-    "bgcolor": "#654a2f"
-  },
-  {
-    "id": 11,
-    "type": "MiniMaxH3DirectorContinuationCS",
-    "pos": [
-      180,
-      -720
-    ],
-    "size": [
-      470,
-      520
-    ],
-    "flags": {},
-    "order": 10,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "h3_bundle",
-        "type": "MINIMAX_H3_BUNDLE",
-        "link": 7
-      },
-      {
-        "name": "director_prompt",
-        "type": "STRING",
-        "link": 8
-      },
-      {
-        "name": "width",
-        "type": "INT",
-        "link": 9
-      },
-      {
-        "name": "height",
-        "type": "INT",
-        "link": 10
-      },
-      {
-        "name": "seconds",
-        "type": "FLOAT",
-        "widget": {
-          "name": "seconds"
+    {
+      "id": 11,
+      "type": "MiniMaxH3DirectorContinuationCS",
+      "pos": [
+        180,
+        -720
+      ],
+      "size": [
+        470,
+        520
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "h3_bundle",
+          "type": "MINIMAX_H3_BUNDLE",
+          "link": 7
         },
-        "link": null
-      },
-      {
-        "name": "fps",
-        "type": "FLOAT",
-        "widget": {
-          "name": "fps"
+        {
+          "name": "director_prompt",
+          "type": "STRING",
+          "link": 8
         },
-        "link": null
-      },
-      {
-        "name": "context_length",
-        "type": "INT",
-        "widget": {
-          "name": "context_length"
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 9
         },
-        "link": null
-      },
-      {
-        "name": "ref_image_size",
-        "type": "COMBO",
-        "widget": {
-          "name": "ref_image_size"
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 10
         },
-        "link": null
-      },
-      {
-        "name": "seed_latent",
-        "shape": 7,
-        "type": "LATENT",
-        "link": 11
-      },
-      {
-        "name": "seed_video",
-        "shape": 7,
-        "type": "VIDEO",
-        "link": null
-      },
-      {
-        "name": "scene",
-        "shape": 7,
-        "type": "MINIMAX_H3_DIRECTOR_SCENE",
-        "link": 12
-      },
-      {
-        "name": "low_vram_cleanup",
-        "type": "BOOLEAN",
-        "widget": {
-          "name": "low_vram_cleanup"
+        {
+          "name": "seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "seconds"
+          },
+          "link": null
         },
-        "link": null
-      },
-      {
-        "name": "profile",
-        "type": "BOOLEAN",
-        "widget": {
-          "name": "profile"
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "widget": {
+            "name": "fps"
+          },
+          "link": null
         },
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "model",
-        "type": "MODEL",
-        "links": [
-          13
-        ]
+        {
+          "name": "context_length",
+          "type": "INT",
+          "widget": {
+            "name": "context_length"
+          },
+          "link": null
+        },
+        {
+          "name": "ref_image_size",
+          "type": "COMBO",
+          "widget": {
+            "name": "ref_image_size"
+          },
+          "link": null
+        },
+        {
+          "name": "seed_latent",
+          "shape": 7,
+          "type": "LATENT",
+          "link": 11
+        },
+        {
+          "name": "seed_video",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "name": "scene",
+          "shape": 7,
+          "type": "MINIMAX_H3_DIRECTOR_SCENE",
+          "link": 12
+        },
+        {
+          "name": "low_vram_cleanup",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "low_vram_cleanup"
+          },
+          "link": null
+        },
+        {
+          "name": "profile",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "profile"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            13
+          ]
+        },
+        {
+          "name": "h3_context",
+          "type": "MINIMAX_H3_CONTEXT",
+          "links": [
+            15,
+            24,
+            26
+          ]
+        }
+      ],
+      "title": "9 ‚Ä¢ H3 DIRECTOR 12GB ENGINE ‚Ä¢ CONTEXT 5",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3DirectorContinuationCS",
+        "cnr_id": "minimaxh3-director"
       },
-      {
-        "name": "h3_context",
-        "type": "MINIMAX_H3_CONTEXT",
-        "links": [
-          15,
-          24
-        ]
-      }
-    ],
-    "title": "9 ‚Ä¢ H3 DIRECTOR 12GB ENGINE ‚Ä¢ CONTEXT 5",
-    "properties": {
-      "Node name for S&R": "MiniMaxH3DirectorContinuationCS",
-      "cnr_id": "minimaxh3-director"
+      "widgets_values": [
+        0.0,
+        24.0,
+        5,
+        "match",
+        true,
+        true
+      ],
+      "widgets_values_named": {
+        "seconds": 0.0,
+        "fps": 24.0,
+        "context_length": 5,
+        "ref_image_size": "match",
+        "low_vram_cleanup": true,
+        "profile": true
+      },
+      "color": "#17394a",
+      "bgcolor": "#24546d"
     },
-    "widgets_values": [
-      0.0,
-      24.0,
-      5,
-      "match",
-      true,
-      true
-    ],
-    "widgets_values_named": {
-      "seconds": 0.0,
-      "fps": 24.0,
-      "context_length": 5,
-      "ref_image_size": "match",
-      "low_vram_cleanup": true,
-      "profile": true
+    {
+      "id": 12,
+      "type": "MiniMaxH3SigmaShift",
+      "pos": [
+        720,
+        -690
+      ],
+      "size": [
+        310,
+        90
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "title": "10 ‚Ä¢ Turbo Sigma Shift ‚Ä¢ 6 / 3",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3SigmaShift",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        6.0,
+        3.0
+      ],
+      "widgets_values_named": {
+        "shift_video": 6.0,
+        "shift_audio": 3.0
+      },
+      "color": "#302d20",
+      "bgcolor": "#514b30"
     },
-    "color": "#17394a",
-    "bgcolor": "#24546d"
-  },
-  {
-    "id": 12,
-    "type": "MiniMaxH3SigmaShift",
-    "pos": [
-      720,
-      -690
-    ],
-    "size": [
-      310,
-      90
-    ],
-    "flags": {},
-    "order": 11,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "model",
-        "type": "MODEL",
-        "link": 13
-      }
-    ],
-    "outputs": [
-      {
-        "name": "MODEL",
-        "type": "MODEL",
-        "links": [
-          14
-        ]
-      }
-    ],
-    "title": "10 ‚Ä¢ Turbo Sigma Shift ‚Ä¢ 6 / 3",
-    "properties": {
-      "Node name for S&R": "MiniMaxH3SigmaShift",
-      "cnr_id": "comfy-core"
+    {
+      "id": 13,
+      "type": "MiniMaxH3MemoryEfficientSageAttentionPatch",
+      "pos": [
+        1080,
+        -690
+      ],
+      "size": [
+        420,
+        55
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 14
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            16,
+            18,
+            28
+          ]
+        }
+      ],
+      "title": "11 ‚Ä¢ OPTIONAL KJ SAGE ATTENTION ‚Ä¢ BYPASS ON cu130",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3MemoryEfficientSageAttentionPatch",
+        "cnr_id": "comfyui-kjnodes"
+      },
+      "widgets_values": [],
+      "color": "#3b263e",
+      "bgcolor": "#57365b"
     },
-    "widgets_values": [
-      6.0,
-      3.0
-    ],
-    "widgets_values_named": {
-      "shift_video": 6.0,
-      "shift_audio": 3.0
-    },
-    "color": "#302d20",
-    "bgcolor": "#514b30"
-  },
-  {
-    "id": 13,
-    "type": "MiniMaxH3MemoryEfficientSageAttentionPatch",
-    "pos": [
-      1080,
-      -690
-    ],
-    "size": [
-      420,
-      55
-    ],
-    "flags": {},
-    "order": 12,
-    "mode": 4,
-    "inputs": [
-      {
-        "name": "model",
-        "type": "MODEL",
-        "link": 14
+    {
+      "id": 14,
+      "type": "KSamplerSelect",
+      "pos": [
+        1080,
+        -520
+      ],
+      "size": [
+        300,
+        70
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            17,
+            29
+          ]
+        }
+      ],
+      "title": "12 ‚Ä¢ Sampler ‚Ä¢ Euler",
+      "properties": {
+        "Node name for S&R": "KSamplerSelect",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "euler"
+      ],
+      "widgets_values_named": {
+        "sampler_name": "euler"
       }
-    ],
-    "outputs": [
-      {
-        "name": "model",
-        "type": "MODEL",
-        "links": [
-          16,
-          18
-        ]
-      }
-    ],
-    "title": "11 ‚Ä¢ OPTIONAL KJ SAGE ATTENTION ‚Ä¢ BYPASS ON cu130",
-    "properties": {
-      "Node name for S&R": "MiniMaxH3MemoryEfficientSageAttentionPatch",
-      "cnr_id": "comfyui-kjnodes"
     },
-    "widgets_values": [],
-    "color": "#3b263e",
-    "bgcolor": "#57365b"
-  },
-  {
-    "id": 14,
-    "type": "KSamplerSelect",
-    "pos": [
-      1080,
-      -520
-    ],
-    "size": [
-      300,
-      70
-    ],
-    "flags": {},
-    "order": 13,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "sampler_name",
-        "type": "COMBO",
-        "widget": {
-          "name": "sampler_name"
+    {
+      "id": 15,
+      "type": "BasicScheduler",
+      "pos": [
+        1080,
+        -390
+      ],
+      "size": [
+        330,
+        110
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 18
         },
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "SAMPLER",
-        "type": "SAMPLER",
-        "links": [
-          17
-        ]
-      }
-    ],
-    "title": "12 ‚Ä¢ Sampler ‚Ä¢ Euler",
-    "properties": {
-      "Node name for S&R": "KSamplerSelect",
-      "cnr_id": "comfy-core"
+        {
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        },
+        {
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "name": "denoise",
+          "type": "FLOAT",
+          "widget": {
+            "name": "denoise"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            19,
+            30
+          ]
+        }
+      ],
+      "title": "13 ‚Ä¢ Simple ‚Ä¢ 8 steps",
+      "properties": {
+        "Node name for S&R": "BasicScheduler",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "simple",
+        8,
+        1.0
+      ],
+      "widgets_values_named": {
+        "scheduler": "simple",
+        "steps": 8,
+        "denoise": 1.0
+      },
+      "color": "#302030",
+      "bgcolor": "#493049"
     },
-    "widgets_values": [
-      "euler"
-    ],
-    "widgets_values_named": {
-      "sampler_name": "euler"
+    {
+      "id": 16,
+      "type": "MiniMaxH3EasySegmentRender_SatoDive",
+      "pos": [
+        1540,
+        -660
+      ],
+      "size": [
+        390,
+        430
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "h3_context",
+          "type": "MINIMAX_H3_CONTEXT",
+          "link": 15
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 16
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 17
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 19
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "segments",
+          "type": "MINIMAX_H3_SEGMENTS",
+          "links": [
+            20,
+            21,
+            27
+          ]
+        }
+      ],
+      "title": "14 ‚Ä¢ SAMPLE H3 ‚Ä¢ LOSSLESS SEGMENT",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3EasySegmentRender_SatoDive",
+        "cnr_id": "minimax-h3-latent-continuation"
+      },
+      "widgets_values": [
+        0,
+        "randomize",
+        "default"
+      ],
+      "widgets_values_named": {
+        "seed": 0,
+        "control_after_generate": "randomize",
+        "segment_seeds": "default"
+      },
+      "color": "#23334a",
+      "bgcolor": "#314969"
+    },
+    {
+      "id": 17,
+      "type": "MiniMaxH3EasySegmentDecode_SatoDive",
+      "pos": [
+        2030,
+        -660
+      ],
+      "size": [
+        390,
+        70
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "segments",
+          "type": "MINIMAX_H3_SEGMENTS",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "preview",
+          "type": "VIDEO",
+          "links": [
+            22,
+            23
+          ]
+        }
+      ],
+      "title": "15 ‚Ä¢ Decode only after sampling",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3EasySegmentDecode_SatoDive",
+        "cnr_id": "minimax-h3-latent-continuation"
+      },
+      "widgets_values": [],
+      "color": "#203b43",
+      "bgcolor": "#305862"
+    },
+    {
+      "id": 18,
+      "type": "MiniMaxH3EasySaveLatent_SatoDive",
+      "pos": [
+        2030,
+        -390
+      ],
+      "size": [
+        430,
+        150
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "name": "segments",
+          "shape": 7,
+          "type": "MINIMAX_H3_SEGMENTS",
+          "link": 21
+        },
+        {
+          "name": "latent",
+          "shape": 7,
+          "type": "LATENT",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "path",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "SAVE LATENT ‚Ä¢ AUTO FOR NEXT CLIP",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3EasySaveLatent_SatoDive",
+        "cnr_id": "minimax-h3-latent-continuation"
+      },
+      "widgets_values": [
+        "H3_Director_12GB"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "H3_Director_12GB"
+      },
+      "color": "#49391f",
+      "bgcolor": "#6b552e"
+    },
+    {
+      "id": 19,
+      "type": "SaveVideo",
+      "pos": [
+        2500,
+        -810
+      ],
+      "size": [
+        620,
+        380
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 22
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        },
+        {
+          "name": "format.codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format.codec"
+          },
+          "link": null
+        },
+        {
+          "name": "codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "codec"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "title": "SAVE CURRENT CLIP ‚Ä¢ ~15s",
+      "properties": {
+        "Node name for S&R": "SaveVideo",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "video/H3_Director_12GB_CLIP",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/H3_Director_12GB_CLIP",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto"
+      },
+      "color": "#202f25",
+      "bgcolor": "#304839"
+    },
+    {
+      "id": 20,
+      "type": "MarkdownNote",
+      "pos": [
+        3090,
+        300
+      ],
+      "size": [
+        620,
+        650
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "RUNBOOK ‚Ä¢ LATENT + MASTER CHAIN",
+      "properties": {},
+      "widgets_values": [
+        "2# RUNBOOK ‚Äî 1 seul workflow pour tout l'√©pisode\n\n### GEN01\n1. LOAD PREVIOUS LATENT reste **bypass**.\n2. MASTER CHAIN: `reset_chain = ON`.\n3. Mets le prompt GEN01 dans Director.\n4. Lance.\n\nSorties:\n- `H3_Director_12GB_CLIP...` = GEN01 seul\n- latent lossless = continuit√© de GEN02\n- `H3_Director_12GB_MASTER...` = master GEN01\n\n### GEN02\n1. Active LOAD PREVIOUS LATENT et choisis le latent GEN01.\n2. MASTER CHAIN: passe `reset_chain = OFF`.\n3. Mets le prompt GEN02.\n4. Lance.\n\nSorties:\n- GEN02 seul\n- latent GEN02\n- master GEN01+GEN02 avec overlap retir√© automatiquement\n\n### GEN03 √† GEN06\nNe touche plus au Master Chain. Il retrouve le master le plus r√©cent et continue:\n- GEN03 ‚Üí master 01+02+03\n- GEN04 ‚Üí master 01+02+03+04\n- ...\n- GEN06 ‚Üí e√©pisode complet\n\n### Si tu refais une g√©n√©ration d√©j√† assembl√©e\n`master_back = 1` utilise le master pr√©c√©dent au lieu du plus r√©cent.\nExemple: tu refais GEN03 apr√®s avoir d√©j√† cr√©√© le master 01+02+03, mets `master_back=1` pour repartir de 01+02.\n\n### Preset 12 Go\n- context = 5\n- ref size = match\n- 480√ó864 / 24 fps / 8 steps\n- search_frames = 8\n- match_window = 5\n- overlap audio = from source\n- colour match = mean + contrast\n\n\n### Attention on CUDA 13 / cu130\nLe n≈ìud KJ/SageAttention est conserv√© mais **bypass par d√©faut**. Utilise l'attention PyTorch native sauf si ton build SageAttention local est explicitement compatible et test√©.\n"
+      ],
+      "color": "#292311",
+      "bgcolor": "#3f361a"
+    },
+    {
+      "id": 21,
+      "type": "MiniMaxH3DirectorMasterChainCS",
+      "pos": [
+        2500,
+        -250
+      ],
+      "size": [
+        520,
+        430
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "current_video",
+          "type": "VIDEO",
+          "link": 23
+        },
+        {
+          "name": "h3_context",
+          "shape": 7,
+          "type": "MINIMAX_H3_CONTEXT",
+          "link": 24
+        },
+        {
+          "name": "reset_chain",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "reset_chain"
+          },
+          "link": null
+        },
+        {
+          "name": "master_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "master_prefix"
+          },
+          "link": null
+        },
+        {
+          "name": "master_back",
+          "type": "INT",
+          "widget": {
+            "name": "master_back"
+          },
+          "link": null
+        },
+        {
+          "name": "overlap_frames",
+          "type": "INT",
+          "widget": {
+            "name": "overlap_frames"
+          },
+          "link": null
+        },
+        {
+          "name": "search_frames",
+          "type": "INT",
+          "widget": {
+            "name": "search_frames"
+          },
+          "link": null
+        },
+        {
+          "name": "match_window",
+          "type": "INT",
+          "widget": {
+            "name": "match_window"
+          },
+          "link": null
+        },
+        {
+          "name": "window_audio",
+          "type": "COMBO",
+          "widget": {
+            "name": "window_audio"
+          },
+          "link": null
+        },
+        {
+          "name": "color_match",
+          "type": "COMBO",
+          "widget": {
+            "name": "color_match"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "master_video",
+          "type": "VIDEO",
+          "links": [
+            25
+          ]
+        },
+        {
+          "name": "report",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "MASTER CHAIN ‚Ä¢ GEN01 ‚Üí EPISODE",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3DirectorMasterChainCS",
+        "cnr_id": "minimaxh3-director"
+      },
+      "widgets_values": [
+        true,
+        "H3_Director_12GB_MASTER",
+        0,
+        5,
+        8,
+        5,
+        "from source",
+        "mean + contrast"
+      ],
+      "widgets_values_named": {
+        "reset_chain": true,
+        "master_prefix": "H3_Director_12GB_MASTER",
+        "master_back": 0,
+        "overlap_frames": 5,
+        "search_frames": 8,
+        "match_window": 5,
+        "window_audio": "from source",
+        "color_match": "mean + contrast"
+      },
+      "color": "#4a3020",
+      "bgcolor": "#70482e"
+    },
+    {
+      "id": 22,
+      "type": "SaveVideo",
+      "pos": [
+        3090,
+        -220
+      ],
+      "size": [
+        620,
+        455
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 25
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        },
+        {
+          "name": "format.codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format.codec"
+          },
+          "link": null
+        },
+        {
+          "name": "codec",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "codec"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "title": "SAVE CUMULATIVE MASTER ‚Ä¢ 15‚Üí30‚Üí45‚Üí‚Ä¶",
+      "properties": {
+        "Node name for S&R": "SaveVideo",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "video/H3_Director_12GB_MASTER",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/H3_Director_12GB_MASTER",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto"
+      },
+      "color": "#4a2020",
+      "bgcolor": "#6d3030"
+    },
+    {
+      "id": 23,
+      "type": "MiniMaxH3EasySegmentRefine_SatoDive",
+      "pos": [
+        1890,
+        940
+      ],
+      "size": [
+        365,
+        580
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "h3_context",
+          "type": "MINIMAX_H3_CONTEXT",
+          "link": 26
+        },
+        {
+          "name": "segments",
+          "type": "MINIMAX_H3_SEGMENTS",
+          "link": 27
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 28
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 29
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 30
+        }
+      ],
+      "outputs": [
+        {
+          "name": "refined_segments",
+          "type": "MINIMAX_H3_SEGMENTS",
+          "links": [
+            31,
+            31
+          ]
+        }
+      ],
+      "title": "OPTIONAL ‚Ä¢ H3 3D LATENT UPSCALE + REFINE (bypassed)",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3EasySegmentRefine_SatoDive"
+      },
+      "widgets_values": [
+        "latent_upscale",
+        0,
+        "tiled_low_vram",
+        0,
+        0,
+        "(no latent upscaler models)",
+        1.3,
+        "cpu",
+        "fp16",
+        512,
+        512,
+        128,
+        32,
+        "default"
+      ],
+      "color": "#28344b",
+      "bgcolor": "#374968"
+    },
+    {
+      "id": 24,
+      "type": "MiniMaxH3EasySegmentDecode_SatoDive",
+      "pos": [
+        2300,
+        960
+      ],
+      "size": [
+        300,
+        90
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "segments",
+          "type": "MINIMAX_H3_SEGMENTS",
+          "link": 31
+        }
+      ],
+      "outputs": [
+        {
+          "name": "preview",
+          "type": "VIDEO",
+          "links": [
+            32,
+            32
+          ]
+        }
+      ],
+      "title": "OPTIONAL ‚Ä¢ DECODE UPSCALED CLIP",
+      "properties": {
+        "Node name for S&R": "MiniMaxH3EasySegmentDecode_SatoDive"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 25,
+      "type": "SaveVideo",
+      "pos": [
+        2650,
+        960
+      ],
+      "size": [
+        300,
+        100
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 32
+        }
+      ],
+      "outputs": [],
+      "title": "OPTIONAL ‚Ä¢ SAVE UPSCALED CLIP",
+      "properties": {
+        "Node name for S&R": "SaveVideo",
+        "cnr_id": "comfy-core"
+      },
+      "widgets_values": [
+        "video/H3_Director_12GB_UPSCALED",
+        "auto",
+        "auto",
+        "auto"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "video/H3_Director_12GB_UPSCALED",
+        "format": "auto",
+        "format.codec": "auto",
+        "codec": "auto"
+      }
     }
-  },
-  {
-    "id": 15,
-    "type": "BasicScheduler",
-    "pos": [
-      1080,
-      -390
-    ],
-    "size": [
-      330,
-      110
-    ],
-    "flags": {},
-    "order": 14,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "model",
-        "type": "MODEL",
-        "link": 18
-      },
-      {
-        "name": "scheduler",
-        "type": "COMBO",
-        "widget": {
-          "name": "scheduler"
-        },
-        "link": null
-      },
-      {
-        "name": "steps",
-        "type": "INT",
-        "widget": {
-          "name": "steps"
-        },
-        "link": null
-      },
-      {
-        "name": "denoise",
-        "type": "FLOAT",
-        "widget": {
-          "name": "denoise"
-        },
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "SIGMAS",
-        "type": "SIGMAS",
-        "links": [
-          19
-        ]
-      }
-    ],
-    "title": "13 ‚Ä¢ Simple ‚Ä¢ 8 steps",
-    "properties": {
-      "Node name for S&R": "BasicScheduler",
-      "cnr_id": "comfy-core"
-    },
-    "widgets_values": [
-      "simple",
-      8,
-      1.0
-    ],
-    "widgets_values_named": {
-      "scheduler": "simple",
-      "steps": 8,
-      "denoise": 1.0
-    },
-    "color": "#302030",
-    "bgcolor": "#493049"
-  },
-  {
-    "id": 16,
-    "type": "MiniMaxH3EasySegmentRender_SatoDive",
-    "pos": [
-      1540,
-      -660
-    ],
-    "size": [
-      390,
-      430
-    ],
-    "flags": {},
-    "order": 15,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "h3_context",
-        "type": "MINIMAX_H3_CONTEXT",
-        "link": 15
-      },
-      {
-        "name": "model",
-        "type": "MODEL",
-        "link": 16
-      },
-      {
-        "name": "sampler",
-        "type": "SAMPLER",
-        "link": 17
-      },
-      {
-        "name": "sigmas",
-        "type": "SIGMAS",
-        "link": 19
-      },
-      {
-        "name": "seed",
-        "type": "INT",
-        "widget": {
-          "name": "seed"
-        },
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "segments",
-        "type": "MINIMAX_H3_SEGMENTS",
-        "links": [
-          20,
-          21
-        ]
-      }
-    ],
-    "title": "14 ‚Ä¢ SAMPLE H3 ‚Ä¢ LOSSLESS SEGMENT",
-    "properties": {
-      "Node name for S&R": "MiniMaxH3EasySegmentRender_SatoDive",
-      "cnr_id": "minimax-h3-latent-continuation"
-    },
-    "widgets_values": [
-      0,
-      "randomize",
-      "default"
-    ],
-    "widgets_values_named": {
-      "seed": 0,
-      "control_after_generate": "randomize",
-      "segment_seeds": "default"
-    },
-    "color": "#23334a",
-    "bgcolor": "#314969"
-  },
-  {
-    "id": 17,
-    "type": "MiniMaxH3EasySegmentDecode_SatoDive",
-    "pos": [
-      2030,
-      -660
-    ],
-    "size": [
-      390,
-      70
-    ],
-    "flags": {},
-    "order": 16,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "segments",
-        "type": "MINIMAX_H3_SEGMENTS",
-        "link": 20
-      }
-    ],
-    "outputs": [
-      {
-        "name": "preview",
-        "type": "VIDEO",
-        "links": [
-          22,
-          23
-        ]
-      }
-    ],
-    "title": "15 ‚Ä¢ Decode only after sampling",
-    "properties": {
-      "Node name for S&R": "MiniMaxH3EasySegmentDecode_SatoDive",
-      "cnr_id": "minimax-h3-latent-continuation"
-    },
-    "widgets_values": [],
-    "color": "#203b43",
-    "bgcolor": "#305862"
-  },
-  {
-    "id": 18,
-    "type": "MiniMaxH3EasySaveLatent_SatoDive",
-    "pos": [
-      2030,
-      -390
-    ],
-    "size": [
-      430,
-      150
-    ],
-    "flags": {},
-    "order": 17,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "filename_prefix",
-        "type": "STRING",
-        "widget": {
-          "name": "filename_prefix"
-        },
-        "link": null
-      },
-      {
-        "name": "segments",
-        "shape": 7,
-        "type": "MINIMAX_H3_SEGMENTS",
-        "link": 21
-      },
-      {
-        "name": "latent",
-        "shape": 7,
-        "type": "LATENT",
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "path",
-        "type": "STRING",
-        "links": null
-      }
-    ],
-    "title": "SAVE LATENT ‚Ä¢ AUTO FOR NEXT CLIP",
-    "properties": {
-      "Node name for S&R": "MiniMaxH3EasySaveLatent_SatoDive",
-      "cnr_id": "minimax-h3-latent-continuation"
-    },
-    "widgets_values": [
-      "H3_Director_12GB"
-    ],
-    "widgets_values_named": {
-      "filename_prefix": "H3_Director_12GB"
-    },
-    "color": "#49391f",
-    "bgcolor": "#6b552e"
-  },
-  {
-    "id": 19,
-    "type": "SaveVideo",
-    "pos": [
-      2500,
-      -810
-    ],
-    "size": [
-      620,
-      380
-    ],
-    "flags": {},
-    "order": 18,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "video",
-        "type": "VIDEO",
-        "link": 22
-      },
-      {
-        "name": "filename_prefix",
-        "type": "STRING",
-        "widget": {
-          "name": "filename_prefix"
-        },
-        "link": null
-      },
-      {
-        "name": "format",
-        "type": "COMFY_DYNAMICCOMBO_V3",
-        "widget": {
-          "name": "format"
-        },
-        "link": null
-      },
-      {
-        "name": "format.codec",
-        "type": "COMFY_DYNAMICCOMBO_V3",
-        "widget": {
-          "name": "format.codec"
-        },
-        "link": null
-      },
-      {
-        "name": "codec",
-        "type": "COMFY_DYNAMICCOMBO_V3",
-        "widget": {
-          "name": "codec"
-        },
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "video",
-        "type": "VIDEO",
-        "links": null
-      }
-    ],
-    "title": "SAVE CURRENT CLIP ‚Ä¢ ~15s",
-    "properties": {
-      "Node name for S&R": "SaveVideo",
-      "cnr_id": "comfy-core"
-    },
-    "widgets_values": [
-      "video/H3_Director_12GB_CLIP",
-      "auto",
-      "auto",
-      "auto"
-    ],
-    "widgets_values_named": {
-      "filename_prefix": "video/H3_Director_12GB_CLIP",
-      "format": "auto",
-      "format.codec": "auto",
-      "codec": "auto"
-    },
-    "color": "#202f25",
-    "bgcolor": "#304839"
-  },
-  {
-    "id": 20,
-    "type": "MarkdownNote",
-    "pos": [
-      3090,
-      300
-    ],
-    "size": [
-      620,
-      650
-    ],
-    "flags": {},
-    "order": 19,
-    "mode": 0,
-    "inputs": [],
-    "outputs": [],
-    "title": "RUNBOOK ‚Ä¢ LATENT + MASTER CHAIN",
-    "properties": {},
-    "widgets_values": [
-      "2# RUNBOOK ‚Äî 1 seul workflow pour tout l'√©pisode\n\n### GEN01\n1. LOAD PREVIOUS LATENT reste **bypass**.\n2. MASTER CHAIN: `reset_chain = ON`.\n3. Mets le prompt GEN01 dans Director.\n4. Lance.\n\nSorties:\n- `H3_Director_12GB_CLIP...` = GEN01 seul\n- latent lossless = continuit√© de GEN02\n- `H3_Director_12GB_MASTER...` = master GEN01\n\n### GEN02\n1. Active LOAD PREVIOUS LATENT et choisis le latent GEN01.\n2. MASTER CHAIN: passe `reset_chain = OFF`.\n3. Mets le prompt GEN02.\n4. Lance.\n\nSorties:\n- GEN02 seul\n- latent GEN02\n- master GEN01+GEN02 avec overlap retir√© automatiquement\n\n### GEN03 √† GEN06\nNe touche plus au Master Chain. Il retrouve le master le plus r√©cent et continue:\n- GEN03 ‚Üí master 01+02+03\n- GEN04 ‚Üí master 01+02+03+04\n- ...\n- GEN06 ‚Üí e√©pisode complet\n\n### Si tu refais une g√©n√©ration d√©j√† assembl√©e\n`master_back = 1` utilise le master pr√©c√©dent au lieu du plus r√©cent.\nExemple: tu refais GEN03 apr√®s avoir d√©j√† cr√©√© le master 01+02+03, mets `master_back=1` pour repartir de 01+02.\n\n### Preset 12 Go\n- context = 5\n- ref size = match\n- 480√ó864 / 24 fps / 8 steps\n- search_frames = 8\n- match_window = 5\n- overlap audio = from source\n- colour match = mean + contrast\n\n\n### Attention on CUDA 13 / cu130\nLe n≈ìud KJ/SageAttention est conserv√© mais **bypass par d√©faut**. Utilise l'attention PyTorch native sauf si ton build SageAttention local est explicitement compatible et test√©.\n"
-    ],
-    "color": "#292311",
-    "bgcolor": "#3f361a"
-  },
-  {
-    "id": 21,
-    "type": "MiniMaxH3DirectorMasterChainCS",
-    "pos": [
-      2500,
-      -250
-    ],
-    "size": [
-      520,
-      430
-    ],
-    "flags": {},
-    "order": 19,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "current_video",
-        "type": "VIDEO",
-        "link": 23
-      },
-      {
-        "name": "h3_context",
-        "shape": 7,
-        "type": "MINIMAX_H3_CONTEXT",
-        "link": 24
-      },
-      {
-        "name": "reset_chain",
-        "type": "BOOLEAN",
-        "widget": {
-          "name": "reset_chain"
-        },
-        "link": null
-      },
-      {
-        "name": "master_prefix",
-        "type": "STRING",
-        "widget": {
-          "name": "master_prefix"
-        },
-        "link": null
-      },
-      {
-        "name": "master_back",
-        "type": "INT",
-        "widget": {
-          "name": "master_back"
-        },
-        "link": null
-      },
-      {
-        "name": "overlap_frames",
-        "type": "INT",
-        "widget": {
-          "name": "overlap_frames"
-        },
-        "link": null
-      },
-      {
-        "name": "search_frames",
-        "type": "INT",
-        "widget": {
-          "name": "search_frames"
-        },
-        "link": null
-      },
-      {
-        "name": "match_window",
-        "type": "INT",
-        "widget": {
-          "name": "match_window"
-        },
-        "link": null
-      },
-      {
-        "name": "window_audio",
-        "type": "COMBO",
-        "widget": {
-          "name": "window_audio"
-        },
-        "link": null
-      },
-      {
-        "name": "color_match",
-        "type": "COMBO",
-        "widget": {
-          "name": "color_match"
-        },
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "master_video",
-        "type": "VIDEO",
-        "links": [
-          25
-        ]
-      },
-      {
-        "name": "report",
-        "type": "STRING",
-        "links": null
-      }
-    ],
-    "title": "MASTER CHAIN ‚Ä¢ GEN01 ‚Üí EPISODE",
-    "properties": {
-      "Node name for S&R": "MiniMaxH3DirectorMasterChainCS",
-      "cnr_id": "minimaxh3-director"
-    },
-    "widgets_values": [
-      true,
-      "H3_Director_12GB_MASTER",
-      0,
-      5,
-      8,
-      5,
-      "from source",
-      "mean + contrast"
-    ],
-    "widgets_values_named": {
-      "reset_chain": true,
-      "master_prefix": "H3_Director_12GB_MASTER",
-      "master_back": 0,
-      "overlap_frames": 5,
-      "search_frames": 8,
-      "match_window": 5,
-      "window_audio": "from source",
-      "color_match": "mean + contrast"
-    },
-    "color": "#4a3020",
-    "bgcolor": "#70482e"
-  },
-  {
-    "id": 22,
-    "type": "SaveVideo",
-    "pos": [
-      3090,
-      -220
-    ],
-    "size": [
-      620,
-      455
-    ],
-    "flags": {},
-    "order": 20,
-    "mode": 0,
-    "inputs": [
-      {
-        "name": "video",
-        "type": "VIDEO",
-        "link": 25
-      },
-      {
-        "name": "filename_prefix",
-        "type": "STRING",
-        "widget": {
-          "name": "filename_prefix"
-        },
-        "link": null
-      },
-      {
-        "name": "format",
-        "type": "COMFY_DYNAMICCOMBO_V3",
-        "widget": {
-          "name": "format"
-        },
-        "link": null
-      },
-      {
-        "name": "format.codec",
-        "type": "COMFY_DYNAMICCOMBO_V3",
-        "widget": {
-          "name": "format.codec"
-        },
-        "link": null
-      },
-      {
-        "name": "codec",
-        "type": "COMFY_DYNAMICCOMBO_V3",
-        "widget": {
-          "name": "codec"
-        },
-        "link": null
-      }
-    ],
-    "outputs": [
-      {
-        "name": "video",
-        "type": "VIDEO",
-        "links": null
-      }
-    ],
-    "title": "SAVE CUMULATIVE MASTER ‚Ä¢ 15‚Üí30‚Üí45‚Üí‚Ä¶",
-    "properties": {
-      "Node name for S&R": "SaveVideo",
-      "cnr_id": "comfy-core"
-    },
-    "widgets_values": [
-      "video/H3_Director_12GB_MASTER",
-      "auto",
-      "auto",
-      "auto"
-    ],
-    "widgets_values_named": {
-      "filename_prefix": "video/H3_Director_12GB_MASTER",
-      "format": "auto",
-      "format.codec": "auto",
-      "codec": "auto"
-    },
-    "color": "#4a2020",
-    "bgcolor": "#6d3030"
-  }
- ],
-  "links": [
-  [
-    1,
-    2,
-    0,
-    3,
-    0,
-    "CLIP"
   ],
-  [
-    2,
-    3,
-    0,
-    8,
-    0,
-    "CLIP(ÄÅt∞(ÄÅl(ÄÄÄÄÃ∞(ÄÄÄÄ–∞(ÄÄÄÄ¿∞(ÄÄÄÄ‡∞(ÄÄÄÄƒ∞(ÄÄÄÄâYà(ÄÅt∞(ÄÅl(ÄÄÄÄ–∞(ÄÄÄÄ‘∞(ÄÄÄÄ¿∞(ÄÄÄÄ‡∞(ÄÄÄÄ»∞(ÄÄÄÄâYà(ÄÅt∞(ÄÅl(ÄÄÄÄ‘∞(ÄÄÄÄÿ∞(ÄÄÄÄ¿∞(ÄÄÄÄ‹∞(ÄÄÄÄ¿∞(ÄÄÄÄâ5=0à(ÄÅt∞(ÄÅl(ÄÄÄÄÿ∞(ÄÄÄÄ‹∞(ÄÄÄÄ¿∞(ÄÄÄÄ‡∞(ÄÄÄÄ–∞(ÄÄÄÄâ5=0à(ÄÅt∞(ÄÅl(ÄÄÄÄ‹∞(ÄÄÄÄ‡∞(ÄÄÄÄ¿∞(ÄÄÄÄƒƒ∞(ÄÄÄÄ¿∞(ÄÄÄÄâ5%9%5a} Õ}	U91à(ÄÅt∞(ÄÅl(ÄÄÄÄ‡∞(ÄÄÄÄ‰∞(ÄÄÄÄ‡∞(ÄÄÄÄƒƒ∞(ÄÄÄÄƒ∞(ÄÄÄÄâMQI%9à(ÄÅt∞(ÄÅl(ÄÄÄÄ‰∞(ÄÄÄÄ‰∞(ÄÄÄÄ‘∞(ÄÄÄÄƒƒ∞(ÄÄÄÄ»∞(ÄÄÄÄâ%9Pà(ÄÅt∞(ÄÅl(ÄÄÄÄƒ¿∞(ÄÄÄÄ‰∞(ÄÄÄÄÿ∞(ÄÄÄÄƒƒ∞(ÄÄÄÄÃ∞(ÄÄÄÄâ%9Pà(ÄÅt∞(ÄÅl(ÄÄÄÄƒƒ∞(ÄÄÄÄƒ¿∞(ÄÄÄÄ¿∞(ÄÄÄÄƒƒ∞(ÄÄÄÄ‡∞(ÄÄÄÄâ1Q9Pà(ÄÅt∞(ÄÅl(ÄÄÄÄƒ»∞(ÄÄÄÄ‰∞(ÄÄÄÄƒ¿∞(ÄÄÄÄƒƒ∞(ÄÄÄÄƒ¿∞(ÄÄÄÄâ5%9%5a} Õ}%IQ=I}M9à(ÄÅt∞(ÄÅl(ÄÄÄÄƒÃ∞(ÄÄÄÄƒƒ∞(ÄÄÄÄ¿∞(ÄÄÄÄƒ»∞(ÄÄÄÄ¿∞(ÄÄÄÄâ5=0à(ÄÅt∞(ÄÅl(ÄÄÄÄƒ–∞(ÄÄÄÄƒ»∞(ÄÄÄÄ¿∞(ÄÄÄÄƒÃ∞(ÄÄÄÄ¿∞(ÄÄÄÄâ5=0à(ÄÅt∞(ÄÅl(ÄÄÄÄƒ‘∞(ÄÄÄÄƒƒ∞(ÄÄÄÄƒ∞(ÄÄÄÄƒÿ∞(ÄÄÄÄ¿∞(ÄÄÄÄâ5%9%5a} Õ}=9QaPà(ÄÅt∞(ÄÅl(ÄÄÄÄƒÿ∞(ÄÄÄÄƒÃ∞(ÄÄÄÄ¿∞(ÄÄÄÄƒÿ∞(ÄÄÄÄƒ∞(ÄÄÄÄâ5=0à(ÄÅt∞(ÄÅl(ÄÄÄÄƒ‹∞(ÄÄÄÄƒ–∞(ÄÄÄÄ¿∞(ÄÄÄÄƒÿ∞(ÄÄÄÄ»∞(ÄÄÄÄâM5A1Hà(ÄÅt∞(ÄÅl(ÄÄÄÄƒ‡∞(ÄÄÄÄƒÃ∞(ÄÄÄÄ¿∞(ÄÄÄÄƒ‘∞(ÄÄÄÄ¿∞(ÄÄÄÄâ5=0à(ÄÅt∞(ÄÅl(ÄÄÄÄƒ‰∞(ÄÄÄÄƒ‘∞(ÄÄÄÄ¿∞(ÄÄÄÄƒÿ∞(ÄÄÄÄÃ∞(ÄÄÄÄâM%5Là(ÄÅt∞(ÄÅl(ÄÄÄÄ»¿∞(ÄÄÄÄƒÿ∞(ÄÄÄÄ¿∞(ÄÄÄÄƒ‹∞(ÄÄÄÄ¿∞(ÄÄÄÄâ5%9%5a} Õ}M59QLà(ÄÅt∞(ÄÅl(ÄÄÄÄ»ƒ∞(ÄÄÄÄƒÿ∞(ÄÄÄÄ¿∞(ÄÄÄÄƒ‡∞(ÄÄÄÄƒ∞(ÄÄÄÄâ5%9%5a} Õ}M59QLà(ÄÅt∞(ÄÅl(ÄÄÄÄ»»∞(ÄÄÄÄƒ‹∞(ÄÄÄÄ¿∞(ÄÄÄÄƒ‰∞(ÄÄÄÄ¿∞(ÄÄÄÄâY%<à(ÄÅt∞(ÄÅl(ÄÄÄÄ»Ã∞(ÄÄÄÄƒ‹∞(ÄÄÄÄ¿∞(ÄÄÄÄ»ƒ∞(ÄÄÄÄ¿∞(ÄÄÄÄâY%<à(ÄÅt∞(ÄÅl(ÄÄÄÄ»–∞(ÄÄÄÄƒƒ∞(ÄÄÄÄƒ∞(ÄÄÄÄ»ƒ∞(ÄÄÄÄƒ∞(ÄÄÄÄâ5%9%5a} Õ}=9QaPà(ÄÅt∞(ÄÅl(ÄÄÄÄ»‘∞(ÄÄÄÄ»ƒ∞(ÄÄÄÄ¿∞(ÄÄÄÄ»»∞(ÄÄÄÄ¿∞(ÄÄÄÄâY%<à(ÄÅt(Åt∞(ÄÄâù…Ω’¡ÃàËÅl(ÄÅÏâ•êàËƒ∞â—•—±îàËãäjÑÄƒ…Å	1-]10Å5=0ÅMQ,à∞ââΩ’πë•πúàÈl¥Ã»»‘∞¥ÃÃ¿∞ƒ‡Ã¿∞‡ƒ¡t∞âçΩ±Ω»àËàå—Ñ…ê›Ñà∞âô±ÖùÃàÈÌıÙ∞(ÄÅÏâ•êàË»∞â—•—±îàËã¬~:∞Å%IQ=HÉäàÄ‰Å%aÅILÉäàÅ=5A%1Å=91dà∞ââΩ’πë•πúàÈl¥ƒÃÿ¿∞¥ƒƒ¿¿∞ƒ–¿¿∞ƒ‰Ã¡t∞âçΩ±Ω»àËàåÕò‹‡Âîà∞âô±ÖùÃàÈÌıÙ∞(ÄÅÏâ•êàËÃ∞â—•—±îàËã¬~RÅ%IMPÅ1%@Ä¨Å1=MM1MLÅ=9Q%9UQ%=8à∞ââΩ’πë•πúàÈlƒÃ¿∞¥‹‡¿∞‡‹¿∞ƒÿƒ¡t∞âçΩ±Ω»àËàå›Ñ’Ñ…êà∞âô±ÖùÃàÈÌıÙ∞(ÄÅÏâ•êàË–∞â—•—±îàËã¬~j Ä‡µMQ@ÅQUI	<ÅM5A1%9à∞ââΩ’πë•πúàÈlÿ‡¿∞¥‹ÿ¿∞ƒÃ¿¿∞‘‰¡t∞âçΩ±Ω»àËàåŸÑÃÿ›Ñà∞âô±ÖùÃàÈÌıÙ∞(ÄÅÏâ•êàË‘∞â—•—±îàËã¬~J¯Å=Ä¨ÅMYÅY%<Ω1Q9Pà∞ââΩ’πë•πúàÈlƒ‰‡¿∞¥‹ÿ¿∞ƒƒ‰¿∞ÿ¿¡t∞âçΩ±Ω»àËàå…ê›Ñ‘‘à∞âô±ÖùÃàÈÌıÙ(Åt∞(ÄÄâëïô•π•—•ΩπÃàÈÏâÕ’âù…Ö¡°ÃàÈmuÙ∞(ÄÄâçΩπô•úàÈÌÙ∞(ÄÄâï·—…ÑàÈÏâô…Ωπ—ïπëYï…Õ•Ω∏àËàƒ∏Ã‘∏‰à∞âëÃàÈÏâÕçÖ±îàË¿∏‹»∞âΩôôÕï–àÈlÃ»¿¿∞ƒƒ¿¡uıÙ∞(ÄÄâŸï…Õ•Ω∏àË¿∏–)Ù
+  "links": [
+    [
+      1,
+      2,
+      0,
+      3,
+      0,
+      "CLIP"
+    ],
+    [
+      2,
+      3,
+      0,
+      8,
+      0,
+      "CLIP"
+    ],
+    [
+      3,
+      4,
+      0,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      4,
+      5,
+      0,
+      8,
+      2,
+      "VAE"
+    ],
+    [
+      5,
+      6,
+      0,
+      7,
+      0,
+      "MODEL"
+    ],
+    [
+      6,
+      7,
+      0,
+      8,
+      4,
+      "MODEL"
+    ],
+    [
+      7,
+      8,
+      0,
+      11,
+      0,
+      "MINIMAX_H3_BUNDLE"
+    ],
+    [
+      8,
+      9,
+      8,
+      11,
+      1,
+      "STRING"
+    ],
+    [
+      9,
+      9,
+      5,
+      11,
+      2,
+      "INT"
+    ],
+    [
+      10,
+      9,
+      6,
+      11,
+      3,
+      "INT"
+    ],
+    [
+      11,
+      10,
+      0,
+      11,
+      8,
+      "LATENT"
+    ],
+    [
+      12,
+      9,
+      10,
+      11,
+      10,
+      "MINIMAX_H3_DIRECTOR_SCENE"
+    ],
+    [
+      13,
+      11,
+      0,
+      12,
+      0,
+      "MODEL"
+    ],
+    [
+      14,
+      12,
+      0,
+      13,
+      0,
+      "MODEL"
+    ],
+    [
+      15,
+      11,
+      1,
+      16,
+      0,
+      "MINIMAX_H3_CONTEXT"
+    ],
+    [
+      16,
+      13,
+      0,
+      16,
+      1,
+      "MODEL"
+    ],
+    [
+      17,
+      14,
+      0,
+      16,
+      2,
+      "SAMPLER"
+    ],
+    [
+      18,
+      13,
+      0,
+      15,
+      0,
+      "MODEL"
+    ],
+    [
+      19,
+      15,
+      0,
+      16,
+      3,
+      "SIGMAS"
+    ],
+    [
+      20,
+      16,
+      0,
+      17,
+      0,
+      "MINIMAX_H3_SEGMENTS"
+    ],
+    [
+      21,
+      16,
+      0,
+      18,
+      1,
+      "MINIMAX_H3_SEGMENTS"
+    ],
+    [
+      22,
+      17,
+      0,
+      19,
+      0,
+      "VIDEO"
+    ],
+    [
+      23,
+      17,
+      0,
+      21,
+      0,
+      "VIDEO"
+    ],
+    [
+      24,
+      11,
+      1,
+      21,
+      1,
+      "MINIMAX_H3_CONTEXT"
+    ],
+    [
+      25,
+      21,
+      0,
+      22,
+      0,
+      "VIDEO"
+    ],
+    [
+      26,
+      11,
+      1,
+      23,
+      0,
+      "MINIMAX_H3_CONTEXT"
+    ],
+    [
+      27,
+      16,
+      0,
+      23,
+      1,
+      "MINIMAX_H3_SEGMENTS"
+    ],
+    [
+      28,
+      13,
+      0,
+      23,
+      2,
+      "MODEL"
+    ],
+    [
+      29,
+      14,
+      0,
+      23,
+      3,
+      "SAMPLER"
+    ],
+    [
+      30,
+      15,
+      0,
+      23,
+      4,
+      "SIGMAS"
+    ],
+    [
+      31,
+      23,
+      0,
+      24,
+      0,
+      "MINIMAX_H3_SEGMENTS"
+    ],
+    [
+      32,
+      24,
+      0,
+      25,
+      0,
+      "VIDEO"
+    ]
+  ]
+}
