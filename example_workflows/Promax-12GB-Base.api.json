@@ -1,0 +1,223 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_fl2va_pruned_fp8_scaled.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "2": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_ref2va_pruned_fp8_scaled.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "3": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    }
+  },
+  "4": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp8mix.safetensors"
+    }
+  },
+  "5": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    }
+  },
+  "6": {
+    "class_type": "MiniMaxH3Promax",
+    "inputs": {
+      "mode": "T2V",
+      "preset": "Balanced portrait 480x864",
+      "global_prompt": "Photorealistic harbour at dawn. A fisherman aboard a small wooden boat. Natural light and plausible physical motion.",
+      "summary": "",
+      "soundscape": "Water, creaking wood, distant seabirds. No dialogue.",
+      "music": "",
+      "shots_json": "[{\"seconds\": 2, \"camera\": \"Wide static shot from the quayside.\", \"action\": \"A small fishing boat rocks gently in a quiet harbour. A large shadow moves beneath it.\", \"audio\": \"Water laps against the hull.\"}, {\"seconds\": 3, \"camera\": \"Low angle close shot of the water beside the boat.\", \"action\": \"A circular ripple spreads outward. The fisherman leans over the rail to look.\", \"audio\": \"A deep underwater rumble grows louder.\"}]",
+      "shift_video": 12.0,
+      "shift_audio": 3.0,
+      "ref1_description": "",
+      "ref1_retained": "appearance and identity",
+      "ref2_description": "",
+      "ref2_retained": "appearance and identity",
+      "ref3_description": "",
+      "ref3_retained": "appearance and identity",
+      "video_description": "Scene and motion reference.",
+      "video_retained": "environment and visual style",
+      "audio_description": "Sound reference.",
+      "audio_retained": "timbre and acoustic character",
+      "model_fl2va": [
+        "1",
+        0
+      ],
+      "model_ref2va": [
+        "2",
+        0
+      ],
+      "clip": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ],
+      "audio_vae": [
+        "5",
+        0
+      ]
+    }
+  },
+  "7": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 42
+    }
+  },
+  "8": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "9": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1.0,
+      "model": [
+        "6",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "6",
+        0
+      ],
+      "conditioning": [
+        "6",
+        1
+      ]
+    }
+  },
+  "11": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "7",
+        0
+      ],
+      "guider": [
+        "10",
+        0
+      ],
+      "sampler": [
+        "8",
+        0
+      ],
+      "sigmas": [
+        "9",
+        0
+      ],
+      "latent_image": [
+        "6",
+        2
+      ]
+    }
+  },
+  "12": {
+    "class_type": "VAEDecodeTiled",
+    "inputs": {
+      "tile_size": 256,
+      "overlap": 64,
+      "temporal_size": 32,
+      "temporal_overlap": 8,
+      "samples": [
+        "11",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ]
+    }
+  },
+  "13": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "11",
+        0
+      ],
+      "vae": [
+        "5",
+        0
+      ]
+    }
+  },
+  "14": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "fps": [
+        "6",
+        3
+      ],
+      "bit_depth": 8,
+      "color_space": "sRGB",
+      "codec": "none",
+      "images": [
+        "12",
+        0
+      ],
+      "audio": [
+        "13",
+        0
+      ]
+    }
+  },
+  "15": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "filename_prefix": "video/Promax",
+      "format": "auto",
+      "codec": "auto",
+      "video": [
+        "14",
+        0
+      ]
+    }
+  },
+  "16": {
+    "class_type": "MiniMaxH3PromaxLastFrame",
+    "inputs": {
+      "images": [
+        "12",
+        0
+      ]
+    }
+  },
+  "17": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "Promax/last_frame",
+      "images": [
+        "16",
+        0
+      ]
+    }
+  }
+}

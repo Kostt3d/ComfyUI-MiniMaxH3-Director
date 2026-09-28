@@ -1,3 +1,5 @@
+> **Nouveau : MiniMax H3 Promax 0.1 (alpha).** Director indépendant, éditeur de plans caméra/action/son et workflows ciblant 12 Go de VRAM. [Installation, modèles, workflows et limites](docs/PROMAX.md). Validation GPU encore à effectuer.
+
 # ComfyUI MiniMax H3 Director
 
 A MiniMax H3 Director fork focused on practical production workflows in ComfyUI, including a validated 12 GB path for RTX 50-series GPUs.
