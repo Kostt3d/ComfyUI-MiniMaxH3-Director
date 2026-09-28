@@ -12,11 +12,12 @@ from safetensors.torch import load_file, save_file
 
 import folder_paths
 from comfy.nested_tensor import NestedTensor
-from comfy_api.latest import io
+from comfy_api.latest import io, ui, Types
 
 from .promax_continuation import FPS, FORMAT_VERSION, _validate_cumulative
 
 MASTER_ROOT = "Promax/masters"
+TAKE_PREVIEW_ROOT = "Promax"
 
 
 def _clean_master_name(value: str) -> str:
@@ -148,3 +149,44 @@ class MiniMaxH3PromaxLoadMaster(io.ComfyNode):
         _, _, frames = _validate_cumulative(latent, "master_latent")
         report = f"MASTER LOADED | {frames}f ({frames / FPS:.3f}s) | {relative}"
         return io.NodeOutput(latent, relative, report, ui={"text": [report]})
+
+
+class MiniMaxH3PromaxPreviewTake(io.ComfyNode):
+    """Preview one current Take in ComfyUI/temp, overwriting the same file every run."""
+
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(
+            node_id="MiniMaxH3PromaxPreviewTake",
+            display_name="Promax · Preview CURRENT TAKE",
+            category="MiniMax H3/Promax",
+            description=(
+                "Temporary video preview. Every run overwrites the same CURRENT_TAKE.mp4 in ComfyUI/temp, "
+                "so rejected Takes do not fill the output folder."
+            ),
+            is_output_node=True,
+            inputs=[
+                io.Video.Input("video"),
+                io.String.Input("preview_name", default="CURRENT_TAKE"),
+            ],
+            outputs=[io.Video.Output("video")],
+        )
+
+    @classmethod
+    def execute(cls, video, preview_name="CURRENT_TAKE"):
+        name = _clean_master_name(preview_name)
+        subfolder = TAKE_PREVIEW_ROOT
+        folder = os.path.join(folder_paths.get_temp_directory(), subfolder)
+        os.makedirs(folder, exist_ok=True)
+        file_name = f"{name}.mp4"
+        full_path = os.path.join(folder, file_name)
+        video.save_to(
+            full_path,
+            format=Types.VideoContainer("mp4"),
+            codec="auto",
+            preset="ultrafast",
+        )
+        return io.NodeOutput(
+            video,
+            ui=ui.PreviewVideo([ui.SavedResult(file_name, subfolder, io.FolderType.temp)]),
+        )
