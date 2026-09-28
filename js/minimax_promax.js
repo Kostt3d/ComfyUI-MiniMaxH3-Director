@@ -1,213 +1,58 @@
-// Promax's independent shot editor. All authored content lives in ordinary node widgets.
 import { app } from '../../scripts/app.js';
+import { api } from '../../scripts/api.js';
 
-const FIELDS = ['global_prompt', 'summary', 'soundscape', 'music', 'shots_json',
-  ...Array.from({ length: 9 }, (_, idx) => idx + 1).flatMap(i => [`ref${i}_description`, `ref${i}_retained`]),
-  'reference_policy', 'auto_ref_limit', 'manual_refs',
-  'video_description', 'video_retained', 'audio_description', 'audio_retained'];
-const widget = (node, name) => node.widgets?.find(w => w.name === name);
-const el = (tag, text, parent) => {
-  const item = document.createElement(tag);
-  if (text !== undefined) item.textContent = text;
-  parent?.append(item);
-  return item;
-};
-function write(node, name, value) {
-  const w = widget(node, name);
-  if (!w) return;
-  w.value = value;
-  w.callback?.(value);
-  node.graph?.change?.();
-  app.graph?.setDirtyCanvas(true, true);
+const FIELDS = [
+  'global_prompt','summary','soundscape','music','shots_json','reference_policy','auto_ref_limit','manual_refs',
+  'video_description','video_retained','audio_description','audio_retained','studio_media_json','shift_video','shift_audio',
+  ...Array.from({length:9},(_,i)=>i+1).flatMap(i=>[`ref${i}_description`,`ref${i}_retained`])
+];
+const widget=(n,name)=>n.widgets?.find(w=>w.name===name);
+const E=(tag,text,parent,cls)=>{const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(cls)x.className=cls;parent?.append(x);return x;};
+function setW(n,name,value){const w=widget(n,name);if(!w)return;w.value=value;w.callback?.(value);n.graph?.change?.();app.graph?.setDirtyCanvas(true,true);}
+function state(n){try{const s=JSON.parse(widget(n,'studio_media_json')?.value||'{}');if(!s.refs)s.refs={};return s;}catch{return {version:1,refs:{}};}}
+function saveState(n,s){s.version=1;setW(n,'studio_media_json',JSON.stringify(s));}
+function mediaURL(file){if(!file)return'';const p=String(file).replace(/\\/g,'/').split('/');const filename=p.pop();return `/view?${new URLSearchParams({filename,type:'input',subfolder:p.join('/')})}`;}
+function button(p,t,fn,cls=''){const b=E('button',t,p,`pmx-btn ${cls}`);b.type='button';b.onclick=e=>{e.preventDefault();e.stopPropagation();fn(e)};return b;}
+function field(p,l,v,fn,rows=1){const w=E('label',undefined,p,'pmx-field');E('span',l,w,'pmx-label');const i=rows>1?E('textarea',undefined,w,'pmx-input'):E('input',undefined,w,'pmx-input');if(rows>1)i.rows=rows;i.value=v??'';i.oninput=()=>fn(i.value);return i;}
+function select(p,l,v,opts,fn){const w=E('label',undefined,p,'pmx-field');E('span',l,w,'pmx-label');const s=E('select',undefined,w,'pmx-input');opts.forEach(v=>{const o=E('option',v,s);o.value=v});s.value=v;s.onchange=()=>fn(s.value);return s;}
+function number(p,l,v,min,max,step,fn){const w=E('label',undefined,p,'pmx-field');E('span',l,w,'pmx-label');const i=E('input',undefined,w,'pmx-input');i.type='number';i.value=v;i.min=min;i.max=max;i.step=step;i.oninput=()=>fn(Number(i.value));return i;}
+function pick(accept,fn){const i=document.createElement('input');i.type='file';i.accept=accept;i.style.display='none';i.onchange=async()=>{if(i.files?.[0])await fn(i.files[0]);i.remove()};document.body.append(i);i.click();}
+async function upload(file){
+  const name=file.name.replace(/[\\/:*?"<>|]+/g,'_');
+  try{const r=await api.fetchApi(`/minimax_director_check_file?filename=${encodeURIComponent(name)}&size=${file.size}`);if(r.ok){const j=await r.json();if(j.exists&&j.name)return{name:j.name};}}catch{}
+  const chunk=8*1024*1024,total=Math.max(1,Math.ceil(file.size/chunk));let out=null;
+  for(let i=0;i<total;i++){const f=new FormData();f.append('file',file.slice(i*chunk,Math.min(file.size,(i+1)*chunk)),name);f.append('filename',name);f.append('chunk_index',String(i));f.append('total_chunks',String(total));const r=await api.fetchApi('/minimax_director_upload_chunk',{method:'POST',body:f});if(!r.ok)throw new Error(`upload ${r.status}`);out=await r.json();}
+  return out||{name:`whatdreamscost/${name}`};
 }
-function field(parent, label, value, change, rows = 2) {
-  const wrap = el('label', undefined, parent);
-  wrap.style.cssText = 'display:block;margin:7px 0;color:#cbd5e1;font-size:12px';
-  el('span', label, wrap);
-  const input = el('textarea', undefined, wrap);
-  input.value = value;
-  input.rows = rows;
-  input.style.cssText = 'display:block;box-sizing:border-box;width:100%;margin-top:4px;resize:vertical;background:#162237;color:#f1f5f9;border:1px solid #415775;border-radius:5px;padding:7px;font:12px sans-serif';
-  input.addEventListener('input', () => change(input.value));
-  return input;
-}
-function selectField(parent, label, value, options, change) {
-  const wrap = el('label', undefined, parent);
-  wrap.style.cssText = 'display:block;margin:7px 0;color:#cbd5e1;font-size:12px';
-  el('span', label, wrap);
-  const input = el('select', undefined, wrap);
-  input.style.cssText = 'display:block;box-sizing:border-box;width:100%;margin-top:4px;background:#162237;color:#f1f5f9;border:1px solid #415775;border-radius:5px;padding:7px;font:12px sans-serif';
-  for (const option of options) {
-    const item = el('option', option, input);
-    item.value = option;
+async function probe(file){try{const r=await api.fetchApi('/minimax_director/probe_video',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({file})});return r.ok?await r.json():null}catch{return null}}
+function calc(shots){const seconds=shots.reduce((a,s)=>a+(Number(s.seconds)||0),0);let frames=Math.ceil(seconds*24-1e-8);frames+=((5-frames)%17+17)%17;return{seconds,frames,actual:frames/24};}
+function card(p,title,entry,kind,load,clear){const c=E('div',undefined,p,'pmx-card'),h=E('div',undefined,c,'pmx-card-head');E('strong',title,h);if(entry?.file)E('span','LOADED',h,'pmx-badge ok');const pr=E('div',undefined,c,'pmx-preview');if(entry?.file){if(kind==='video'){const v=E('video',undefined,pr);v.src=mediaURL(entry.file);v.controls=true;v.muted=true;v.preload='metadata';}else if(kind==='audio'){const a=E('audio',undefined,pr);a.src=mediaURL(entry.file);a.controls=true;}else{const im=E('img',undefined,pr);im.src=mediaURL(entry.file);}}else{E('div',kind==='video'?'▶':kind==='audio'?'♪':'＋',pr,'pmx-empty');E('small','Aucun média',pr);}const f=E('div',undefined,c,'pmx-card-foot');E('div',entry?.file?entry.file.split('/').pop():'Non chargé',f,'pmx-file');const a=E('div',undefined,f,'pmx-actions');button(a,entry?.file?'Remplacer':'Charger',load,'primary');if(entry?.file)button(a,'Effacer',clear,'danger');return c;}
+
+const CSS=`
+.pmx-root{height:900px;overflow:auto;background:#091321;color:#dbeafe;border:1px solid #315474;border-radius:10px;font:12px ui-sans-serif,system-ui;padding:12px;box-sizing:border-box;scrollbar-color:#3d5d7b #0a1421}.pmx-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.pmx-title{font-size:19px;font-weight:800;letter-spacing:2px;color:#67e8f9}.pmx-sub{font-size:10px;color:#7f9db7}.pmx-badges{display:flex;gap:5px;flex-wrap:wrap}.pmx-badge{border:1px solid #35506b;background:#11243a;color:#a9c7df;border-radius:999px;padding:3px 7px;font-size:10px}.pmx-badge.ok{border-color:#2e7d62;color:#8df2cc;background:#12352b}.pmx-badge.warn{border-color:#8f6030;color:#ffd59d;background:#3a2816}.pmx-tabs{display:flex;gap:5px;position:sticky;top:0;background:#091321;padding:8px 0;z-index:5;border-bottom:1px solid #1e3a52}.pmx-tab{background:#12263c;border:1px solid #34536f;color:#cbd5e1;border-radius:5px;padding:7px 12px;cursor:pointer}.pmx-tab.active{background:#1d4964;border-color:#69d7e8;color:#fff}.pmx-toolbar{display:flex;gap:6px;align-items:end;flex-wrap:wrap;background:#0e1d2f;border:1px solid #263e56;padding:8px;border-radius:7px;margin:8px 0}.pmx-toolbar .pmx-field{min-width:145px;flex:1}.pmx-btn{background:#203c59;color:#e8f3ff;border:1px solid #456684;border-radius:5px;padding:6px 9px;cursor:pointer;font-size:11px}.pmx-btn:hover{background:#2c5275}.pmx-btn.primary{border-color:#3f8ca3;background:#1e5267}.pmx-btn.danger{border-color:#734448;background:#44252a;color:#ffced0}.pmx-field{display:block;margin:5px 0}.pmx-label{display:block;color:#9fbed6;font-size:10px;text-transform:uppercase;letter-spacing:.35px;margin-bottom:3px}.pmx-input{box-sizing:border-box;width:100%;background:#101f31;color:#eff6ff;border:1px solid #35516d;border-radius:4px;padding:6px;font:12px ui-sans-serif,system-ui;resize:vertical}.pmx-section{background:#0d1b2b;border:1px solid #263e56;border-radius:7px;padding:9px;margin:8px 0}.pmx-section-title{font-weight:700;color:#e8f3ff;margin-bottom:6px}.pmx-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pmx-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pmx-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}.pmx-kpi>div{background:#101f31;border:1px solid #304b64;border-radius:6px;padding:8px}.pmx-kpi b{display:block;color:#73dcec;font-size:16px}.pmx-timeline{display:flex;min-height:48px;background:#070e18;border:1px solid #2b4055;border-radius:5px;overflow:hidden;margin:8px 0}.pmx-shot{min-width:70px;display:flex;flex-direction:column;justify-content:center;align-items:center;border-right:1px solid #102638;background:#17465d;padding:5px}.pmx-shot:nth-child(even){background:#1a5366}.pmx-shot-card{background:#112338;border:1px solid #304b64;border-radius:6px;padding:8px}.pmx-shot-head{display:flex;align-items:center;justify-content:space-between}.pmx-shot-head strong{color:#8be8f2}.pmx-card{background:#112338;border:1px solid #304b64;border-radius:7px;overflow:hidden;min-width:0}.pmx-card-head{height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 8px;background:#0d1b2b}.pmx-preview{height:150px;background:#060d15;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden}.pmx-preview img,.pmx-preview video{width:100%;height:100%;object-fit:contain}.pmx-preview audio{width:92%}.pmx-empty{font-size:34px;color:#42617e}.pmx-card-foot{padding:7px}.pmx-file{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#94abc0;margin-bottom:5px}.pmx-actions{display:flex;gap:5px}.pmx-ref-fields{padding:0 7px 8px}.pmx-note{background:#122638;border-left:3px solid #58cfe0;padding:8px;margin:7px 0;color:#c8d8e8}.pmx-code{white-space:pre-wrap;background:#050b12;border:1px solid #293f54;border-radius:5px;padding:8px;color:#b9e3ef;max-height:280px;overflow:auto}.pmx-drop{outline:2px dashed #64d8e8;outline-offset:-6px}@media(max-width:760px){.pmx-grid2,.pmx-grid3{grid-template-columns:1fr}.pmx-kpi{grid-template-columns:1fr 1fr}}
+`;
+
+function editor(node){
+  const root=document.createElement('div');root.className='pmx-root';['pointerdown','mousedown','keydown','wheel'].forEach(x=>root.addEventListener(x,e=>e.stopPropagation()));const style=document.createElement('style');style.textContent=CSS;
+  let tab='Storyboard',report='Prêt pour le premier Take.',prompt='',busy='';
+  async function setMedia(slot,kind,file){busy=`Upload ${file.name}…`;draw();try{const up=await upload(file),s=state(node),entry={file:up.name||`whatdreamscost/${file.name}`};if(kind==='video'){const m=await probe(entry.file);entry.trim_start=0;entry.duration=Math.min(5,Math.max(5/24,Number(m?.duration||5)));entry.width=m?.width||0;entry.height=m?.height||0;entry.fps=m?.fps||0;}if(slot.startsWith('ref:'))s.refs[slot.slice(4)]=entry;else s[slot]=entry;saveState(node,s);}catch(e){alert(`Promax upload: ${e.message||e}`)}finally{busy='';draw();}}
+  function clear(slot){const s=state(node);if(slot.startsWith('ref:'))delete s.refs[slot.slice(4)];else s[slot]=null;saveState(node,s);draw();}
+  function freeRef(){const s=state(node);for(let i=1;i<=9;i++)if(!s.refs?.[String(i)]?.file)return i;return null;}
+  function header(){const h=E('div',undefined,root,'pmx-head'),l=E('div',undefined,h);E('div','MINIMAX H3 PROMAX',l,'pmx-title');E('div','STUDIO DIRECTOR · native H3 · 12GB target',l,'pmx-sub');const bs=E('div',undefined,h,'pmx-badges');E('span',widget(node,'mode')?.value||'T2V',bs,'pmx-badge ok');E('span',widget(node,'preset')?.value||'preset',bs,'pmx-badge');E('span',widget(node,'reference_policy')?.value||'Auto',bs,'pmx-badge');if(busy)E('span',busy,bs,'pmx-badge warn');const nav=E('div',undefined,root,'pmx-tabs');['Storyboard','Media Bank','Continuity','Control'].forEach(n=>{const b=E('button',n,nav,`pmx-tab ${tab===n?'active':''}`);b.onclick=()=>{tab=n;draw();}})}
+  function storyboard(p){const t=E('div',undefined,p,'pmx-toolbar');select(t,'Mode',widget(node,'mode')?.value||'T2V',['T2V','FL2V','Ref2V'],v=>{setW(node,'mode',v);draw()});const opts=widget(node,'preset')?.options?.values||['Balanced portrait 480x864'];select(t,'Résolution',widget(node,'preset')?.value||opts[0],opts,v=>{setW(node,'preset',v);draw()});button(t,'+ Plan',()=>{let s=[];try{s=JSON.parse(widget(node,'shots_json')?.value||'[]')}catch{};s.push({seconds:2,camera:'',action:'',audio:''});setW(node,'shots_json',JSON.stringify(s));draw()},'primary');button(t,'+ Image Ref',()=>{const i=freeRef();if(!i)return alert('Banque pleine');pick('image/*',f=>setMedia(`ref:${i}`,'image',f))});button(t,'+ Vidéo Ref',()=>pick('video/*',f=>setMedia('reference_video','video',f)));button(t,'+ Audio Ref',()=>pick('audio/*,video/*',f=>setMedia('reference_audio','audio',f)));
+    const g=E('div',undefined,p,'pmx-section');E('div','DIRECTION GLOBALE',g,'pmx-section-title');field(g,'Global prompt',widget(node,'global_prompt')?.value||'',v=>setW(node,'global_prompt',v),3);const gg=E('div',undefined,g,'pmx-grid3');field(gg,'Soundscape',widget(node,'soundscape')?.value||'',v=>setW(node,'soundscape',v),2);field(gg,'Music',widget(node,'music')?.value||'',v=>setW(node,'music',v),2);field(gg,'Summary Ref2V',widget(node,'summary')?.value||'',v=>setW(node,'summary',v),2);
+    let shots=[];try{shots=JSON.parse(widget(node,'shots_json')?.value||'[]');if(!Array.isArray(shots))shots=[]}catch{}const m=calc(shots),k=E('div',undefined,p,'pmx-kpi');[[shots.length,'PLANS'],[m.seconds.toFixed(2)+'s','DEMANDÉ'],[m.frames,'FRAMES H3'],[m.actual.toFixed(3)+'s','RÉEL']].forEach(([v,l])=>{const d=E('div',undefined,k);E('b',String(v),d);E('span',l,d)});const tl=E('div',undefined,p,'pmx-timeline');shots.forEach((s,i)=>{const d=E('div',undefined,tl,'pmx-shot');d.style.flex=String(Math.max(.3,Number(s.seconds)||1));E('b',`SHOT ${i+1}`,d);E('small',`${Number(s.seconds)||0}s`,d)});const grid=E('div',undefined,p,'pmx-grid2'),save=()=>setW(node,'shots_json',JSON.stringify(shots));shots.forEach((s,i)=>{const c=E('div',undefined,grid,'pmx-shot-card'),h=E('div',undefined,c,'pmx-shot-head');E('strong',`SHOT ${i+1}`,h);const a=E('div',undefined,h);button(a,'↑',()=>{if(i){[shots[i-1],shots[i]]=[shots[i],shots[i-1]];save();draw()}});button(a,'↓',()=>{if(i<shots.length-1){[shots[i],shots[i+1]]=[shots[i+1],shots[i]];save();draw()}});button(a,'×',()=>{shots.splice(i,1);save();draw()},'danger');number(c,'Durée (s)',s.seconds||2,.25,15,.25,v=>{s.seconds=v;save()});field(c,'Caméra · instruction en premier',s.camera||'',v=>{s.camera=v;save()},2);field(c,'Action visible',s.action||'',v=>{s.action=v;save()},3);field(c,'Audio / dialogue',s.audio||'',v=>{s.audio=v;save()},2)});
   }
-  input.value = value;
-  input.addEventListener('change', () => change(input.value));
-  return input;
-}
-function numberField(parent, label, value, min, max, change) {
-  const wrap = el('label', undefined, parent);
-  wrap.style.cssText = 'display:block;margin:7px 0;color:#cbd5e1;font-size:12px';
-  el('span', label, wrap);
-  const input = el('input', undefined, wrap);
-  input.type = 'number'; input.min = String(min); input.max = String(max); input.step = '1'; input.value = value;
-  input.style.cssText = 'display:block;box-sizing:border-box;width:100%;margin-top:4px;background:#162237;color:#f1f5f9;border:1px solid #415775;border-radius:5px;padding:7px;font:12px sans-serif';
-  input.addEventListener('input', () => change(Number(input.value)));
-  return input;
-}
-function button(parent, label, action) {
-  const b = el('button', label, parent);
-  b.type = 'button';
-  b.style.cssText = 'background:#243c58;color:#f1f5f9;border:1px solid #526e8d;border-radius:5px;padding:6px 10px;margin:3px;cursor:pointer';
-  b.addEventListener('click', action);
-  return b;
-}
-function editor(node) {
-  const root = document.createElement('div');
-  root.style.cssText = 'box-sizing:border-box;background:#0b1423;color:#e2e8f0;padding:12px;border:1px solid #355778;border-radius:9px;width:100%;height:680px;overflow:auto;font-family:sans-serif';
-  root.addEventListener('pointerdown', event => event.stopPropagation());
-  root.addEventListener('keydown', event => event.stopPropagation());
-  root.addEventListener('wheel', event => event.stopPropagation());
-  let tab = 'Scénario';
-  let lastReport = 'Cible : 12 Go VRAM. Durée : 4–15 s. Commencer par 5 s.';
-  let lastPrompt = '';
-  function draw() {
-    root.replaceChildren();
-    const title = el('div', 'MINIMAX H3 PROMAX', root);
-    title.style.cssText = 'font-size:17px;font-weight:700;letter-spacing:2px;color:#71d4e9;margin-bottom:8px';
-    const nav = el('div', undefined, root);
-    for (const name of ['Scénario', 'Références', 'Contrôle']) {
-      const b = button(nav, name, () => { tab = name; draw(); });
-      if (name === tab) b.style.borderColor = '#71d4e9';
-    }
-    const form = el('div', undefined, root);
-    const bound = (name, label, rows) => field(form, label, widget(node, name)?.value || '', value => write(node, name, value), rows);
-    if (tab === 'Références') {
-      el('p', 'BANQUE 9 REFS · Auto (12GB) encode seulement les références utiles. Dans les prompts, utilise @ref1 … @ref9. Promax compacte automatiquement les refs actives vers <Picture 1…N> pour H3.', form);
-      selectField(form, 'Politique de références', widget(node, 'reference_policy')?.value || 'Auto (12GB)',
-        ['Auto (12GB)', 'Manual', 'Force all loaded'], value => write(node, 'reference_policy', value));
-      numberField(form, 'Limite Auto si aucun @refN explicite', widget(node, 'auto_ref_limit')?.value ?? 4, 1, 9,
-        value => write(node, 'auto_ref_limit', value));
-      bound('manual_refs', 'Manual · slots à encoder, ex. 1,4,7', 1);
-      for (let i = 1; i <= 9; i++) {
-        const card = el('div', undefined, form);
-        card.style.cssText = 'background:#132134;border:1px solid #31475f;border-radius:6px;padding:8px;margin:8px 0';
-        el('strong', `REF BANK ${i} · utiliser @ref${i} dans le scénario`, card);
-        const local = (name, label, rows) => field(card, label, widget(node, name)?.value || '', value => write(node, name, value), rows);
-        local(`ref${i}_description`, 'Identité / rôle', 2);
-        local(`ref${i}_retained`, 'Éléments à conserver', 1);
-      }
-      bound('video_description', '<Video 1> — rôle', 1);
-      bound('video_retained', 'Vidéo — éléments à conserver', 1);
-      bound('audio_description', '<Audio 1> — rôle', 1);
-      bound('audio_retained', 'Audio — éléments à conserver', 1);
-      return;
-    }
-    if (tab === 'Contrôle') {
-      el('p', lastReport, form);
-      const preview = field(form, 'Prompt réellement encodé — disponible après exécution', lastPrompt, () => {}, 12);
-      preview.readOnly = true;
-      bound('shots_json', 'Storyboard JSON — sauvegardé dans le workflow', 12);
-      el('p', 'Continuation : le latent précédent porte déjà la mémoire. Pour le nouveau Take, commence par une nouvelle vue caméra et une nouvelle action. La validation du Take se fait dans « Promax · COMMIT Take → Master ».', form);
-      button(form, 'Recharger les plans depuis le JSON', () => { tab = 'Scénario'; draw(); });
-      return;
-    }
-    bound('global_prompt', 'Direction globale : lieu, sujets, lumière, style', 3);
-    bound('summary', 'Summary — Ref2V uniquement', 2);
-    bound('soundscape', 'Ambiance sonore globale', 2);
-    bound('music', 'Musique — laisser vide pour aucune musique', 1);
-    let shots;
-    try {
-      shots = JSON.parse(widget(node, 'shots_json')?.value || '[]');
-      if (!Array.isArray(shots)) throw new Error('Expected an array');
-    } catch {
-      el('p', 'JSON invalide : corrige-le dans Contrôle. Le contenu a été conservé.', form);
-      return;
-    }
-    const status = el('p', '', form);
-    const timeline = el('div', undefined, form);
-    timeline.style.cssText = 'display:flex;gap:3px;height:24px;margin-bottom:10px';
-    function refreshTime() {
-      const total = shots.reduce((sum, shot) => sum + (Number(shot.seconds) || 0), 0);
-      let frames = Math.ceil(total * 24 - 1e-8);
-      frames += ((5 - frames) % 17 + 17) % 17;
-      status.textContent = `${total.toFixed(2)} s demandées → ${(frames / 24).toFixed(3)} s / ${frames} frames à 24 fps`;
-      status.style.color = total >= 4 && total <= 15 ? '#90e3c0' : '#ffb88c';
-      timeline.replaceChildren();
-      shots.forEach((shot, i) => {
-        const part = el('div', String(i + 1), timeline);
-        part.style.cssText = `flex:${Math.max(0.1, Number(shot.seconds) || 0)};background:#256078;text-align:center;border-radius:3px;padding-top:4px;font-size:12px`;
-      });
-    }
-    const save = () => { write(node, 'shots_json', JSON.stringify(shots)); refreshTime(); };
-    refreshTime();
-    shots.forEach((shot, index) => {
-      const card = el('div', undefined, form);
-      card.style.cssText = 'background:#132134;border:1px solid #31475f;border-radius:6px;padding:9px;margin-bottom:10px';
-      const row = el('div', undefined, card);
-      el('strong', `PLAN ${index + 1} · `, row);
-      const duration = el('input', undefined, row);
-      duration.type = 'number'; duration.min = '0.25'; duration.max = '15'; duration.step = '0.25';
-      duration.value = shot.seconds; duration.style.width = '65px';
-      duration.addEventListener('input', () => { shot.seconds = Number(duration.value); save(); });
-      el('span', ' secondes', row);
-      button(row, '↑', () => { if (index) { [shots[index - 1], shots[index]] = [shots[index], shots[index - 1]]; save(); draw(); } });
-      button(row, '↓', () => { if (index < shots.length - 1) { [shots[index], shots[index + 1]] = [shots[index + 1], shots[index]]; save(); draw(); } });
-      button(row, 'Supprimer', () => { shots.splice(index, 1); save(); draw(); });
-      field(card, 'Caméra — première instruction du plan', shot.camera || '', value => { shot.camera = value; save(); }, 1);
-      field(card, 'Action visible', shot.action || '', value => { shot.action = value; save(); }, 3);
-      field(card, 'Son / dialogue du plan', shot.audio || '', value => { shot.audio = value; save(); }, 1);
-    });
-    button(form, '+ Ajouter un plan', () => {
-      if (shots.length >= 12) return;
-      shots.push({ seconds: 2, camera: '', action: '', audio: '' }); save(); draw();
-    });
+  function media(p){const s=state(node),t=E('div',undefined,p,'pmx-toolbar');select(t,'Politique refs',widget(node,'reference_policy')?.value||'Auto (12GB)',['Auto (12GB)','Manual','Force all loaded'],v=>{setW(node,'reference_policy',v);draw()});number(t,'Limite Auto',widget(node,'auto_ref_limit')?.value??4,1,9,1,v=>setW(node,'auto_ref_limit',v));field(t,'Manual slots',widget(node,'manual_refs')?.value||'1,2,3',v=>setW(node,'manual_refs',v));button(t,'+ Image',()=>{const i=freeRef();if(!i)return alert('Banque pleine');pick('image/*',f=>setMedia(`ref:${i}`,'image',f))},'primary');button(t,'+ Vidéo',()=>pick('video/*',f=>setMedia('reference_video','video',f)));button(t,'+ Audio',()=>pick('audio/*,video/*',f=>setMedia('reference_audio','audio',f)));
+    const anchors=E('div',undefined,p,'pmx-grid2');card(anchors,'FIRST FRAME',s.first_frame,'image',()=>pick('image/*',f=>setMedia('first_frame','image',f)),()=>clear('first_frame'));card(anchors,'LAST FRAME',s.last_frame,'image',()=>pick('image/*',f=>setMedia('last_frame','image',f)),()=>clear('last_frame'));
+    const n=E('div',undefined,p,'pmx-note');n.textContent='BANQUE 9 REFS · Charge les identités ici. Dans le scénario, utilise @ref1 … @ref9. Auto (12GB) encode uniquement les refs utiles.';const grid=E('div',undefined,p,'pmx-grid3');for(let i=1;i<=9;i++){const c=card(grid,`@ref${i}`,s.refs?.[String(i)],'image',()=>pick('image/*',f=>setMedia(`ref:${i}`,'image',f)),()=>clear(`ref:${i}`)),f=E('div',undefined,c,'pmx-ref-fields');field(f,'Identité / rôle',widget(node,`ref${i}_description`)?.value||'',v=>setW(node,`ref${i}_description`,v),2);field(f,'Retained',widget(node,`ref${i}_retained`)?.value||'appearance and identity',v=>setW(node,`ref${i}_retained`,v),2)}
+    const av=E('div',undefined,p,'pmx-grid2'),vc=card(av,'REFERENCE VIDEO',s.reference_video,'video',()=>pick('video/*',f=>setMedia('reference_video','video',f)),()=>clear('reference_video')),vf=E('div',undefined,vc,'pmx-ref-fields');field(vf,'Rôle',widget(node,'video_description')?.value||'',v=>setW(node,'video_description',v),2);field(vf,'Retained',widget(node,'video_retained')?.value||'',v=>setW(node,'video_retained',v));if(s.reference_video){number(vf,'Trim start (s)',s.reference_video.trim_start||0,0,999,.1,v=>{s.reference_video.trim_start=v;saveState(node,s)});number(vf,'Durée utilisée (max 5s)',s.reference_video.duration||5,.21,5,.1,v=>{s.reference_video.duration=Math.min(5,v);saveState(node,s)})}const ac=card(av,'REFERENCE AUDIO',s.reference_audio,'audio',()=>pick('audio/*,video/*',f=>setMedia('reference_audio','audio',f)),()=>clear('reference_audio')),af=E('div',undefined,ac,'pmx-ref-fields');field(af,'Rôle',widget(node,'audio_description')?.value||'',v=>setW(node,'audio_description',v),2);field(af,'Retained',widget(node,'audio_retained')?.value||'',v=>setW(node,'audio_retained',v));
   }
-  draw();
-  return { root, draw, executed(data) {
-    lastReport = data?.promax_report?.[0] || lastReport;
-    lastPrompt = data?.promax_prompt?.[0] || lastPrompt;
-    if (tab === 'Contrôle') draw();
-  }};
+  function continuity(p){const s=E('div',undefined,p,'pmx-section');E('div','TAKE → COMMIT → MASTER',s,'pmx-section-title');E('div','Chaque rendu reste un Take tant que COMMIT est OFF. Un Take rejeté ne modifie jamais le Master et CURRENT_TAKE.mp4 est simplement remplacé.',s,'pmx-note');E('div','LAST VALIDATED MASTER\n        ↓\nLATENT CONTINUATION · 22f overlap\n        ↓\nGENERATE CURRENT TAKE\n        ↓\nPREVIEW\n   ├─ REJECT → rerender, Master intact\n   └─ ACCEPT → COMMIT → Master remplacé',s,'pmx-code');const k=E('div',undefined,p,'pmx-kpi');[['22f','OVERLAP'],['119f','EXTENSION'],['~0.92s','CONTEXTE'],['~4.96s','NOUVEAU']].forEach(([v,l])=>{const d=E('div',undefined,k);E('b',v,d);E('span',l,d)});E('div','Le latent contient déjà le raccord. Ne répète pas “Continue directly from previous latent…”. Commence le nouveau Shot 1 par une nouvelle vue caméra et une nouvelle action.',p,'pmx-note')}
+  function control(p){const t=E('div',undefined,p,'pmx-toolbar');number(t,'Sigma video',widget(node,'shift_video')?.value??12,.1,30,.1,v=>setW(node,'shift_video',v));number(t,'Sigma audio',widget(node,'shift_audio')?.value??3,.1,30,.1,v=>setW(node,'shift_audio',v));button(t,'Ouvrir dossier médias',()=>api.fetchApi('/minimax_director_open_folder'));const r=E('div',undefined,p,'pmx-section');E('div','DERNIER RAPPORT',r,'pmx-section-title');E('div',report,r,'pmx-code');const q=E('div',undefined,p,'pmx-section');E('div','PROMPT RÉELLEMENT ENCODÉ',q,'pmx-section-title');E('div',prompt||'Disponible après la première exécution.',q,'pmx-code')}
+  function draw(){root.replaceChildren(style);header();const p=E('div',undefined,root);if(tab==='Storyboard')storyboard(p);else if(tab==='Media Bank')media(p);else if(tab==='Continuity')continuity(p);else control(p)}
+  root.addEventListener('dragover',e=>{e.preventDefault();root.classList.add('pmx-drop')});root.addEventListener('dragleave',()=>root.classList.remove('pmx-drop'));root.addEventListener('drop',e=>{e.preventDefault();root.classList.remove('pmx-drop');const f=e.dataTransfer?.files?.[0];if(!f)return;if(f.type.startsWith('image/')){const i=freeRef();if(i)setMedia(`ref:${i}`,'image',f)}else if(f.type.startsWith('video/'))setMedia('reference_video','video',f);else if(f.type.startsWith('audio/'))setMedia('reference_audio','audio',f)});
+  draw();return{root,draw,executed(d){report=d?.promax_report?.[0]||report;prompt=d?.promax_prompt?.[0]||prompt;if(tab==='Control')draw()}};
 }
-app.registerExtension({
-  name: 'MiniMaxH3.Promax',
-  async beforeRegisterNodeDef(nodeType, nodeData) {
-    if (nodeData.name !== 'MiniMaxH3Promax') return;
-    const created = nodeType.prototype.onNodeCreated;
-    nodeType.prototype.onNodeCreated = function () {
-      const result = created?.apply(this, arguments);
-      for (const name of FIELDS) {
-        const w = widget(this, name);
-        if (!w) continue;
-        w.hidden = true;
-        w.options = { ...w.options, hidden: true };
-        w.computeSize = () => [0, -4];
-        w.draw = () => {};
-        if (w.element) w.element.style.display = 'none';
-      }
-      this.promaxEditor = editor(this);
-      this.addDOMWidget('promax_editor', 'promax-editor', this.promaxEditor.root,
-        { serialize: false, getMinHeight: () => 680, getMaxHeight: () => 680 });
-      this.setSize([680, Math.max(this.size[1], 1000)]);
-      return result;
-    };
-    const configured = nodeType.prototype.onConfigure;
-    nodeType.prototype.onConfigure = function () {
-      const result = configured?.apply(this, arguments);
-      this.promaxEditor?.draw();
-      return result;
-    };
-    const executed = nodeType.prototype.onExecuted;
-    nodeType.prototype.onExecuted = function (data) {
-      const result = executed?.apply(this, arguments);
-      this.promaxEditor?.executed(data);
-      return result;
-    };
-    const removed = nodeType.prototype.onRemoved;
-    nodeType.prototype.onRemoved = function () {
-      this.promaxEditor?.root.remove();
-      return removed?.apply(this, arguments);
-    };
-  },
-});
+
+app.registerExtension({name:'MiniMaxH3.PromaxStudio',async beforeRegisterNodeDef(nodeType,nodeData){if(nodeData.name!=='MiniMaxH3Promax')return;const created=nodeType.prototype.onNodeCreated;nodeType.prototype.onNodeCreated=function(){const r=created?.apply(this,arguments);for(const name of FIELDS){const w=widget(this,name);if(!w)continue;w.hidden=true;w.options={...w.options,hidden:true};w.computeSize=()=>[0,-4];w.draw=()=>{};if(w.element)w.element.style.display='none'}this.promaxEditor=editor(this);this.addDOMWidget('promax_studio','promax-studio',this.promaxEditor.root,{serialize:false,getMinHeight:()=>900,getMaxHeight:()=>900});this.setSize([900,Math.max(this.size[1],1220)]);return r};const conf=nodeType.prototype.onConfigure;nodeType.prototype.onConfigure=function(){const r=conf?.apply(this,arguments);this.promaxEditor?.draw();return r};const exe=nodeType.prototype.onExecuted;nodeType.prototype.onExecuted=function(d){const r=exe?.apply(this,arguments);this.promaxEditor?.executed(d);return r};const rem=nodeType.prototype.onRemoved;nodeType.prototype.onRemoved=function(){this.promaxEditor?.root.remove();return rem?.apply(this,arguments)}}});
